@@ -18,11 +18,15 @@ namespace GameJam2026
         const int PlayerSize = 50;
         const float PlayerSpeed = 300f;
 
+        ScreenManager screenManager;
+
         public GameJam2026Game()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            screenManager = new ScreenManager(this);
+            Components.Add(screenManager);
         }
 
         protected override void Initialize()
@@ -51,17 +55,16 @@ namespace GameJam2026
 
         protected override void Update(GameTime gameTime)
         {
-            MouseState mouseState = Mouse.GetState();
             KeyboardState keyboardState = Keyboard.GetState();
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
-            if (keyboardState.IsKeyDown(Keys.Escape) ||
-                keyboardState.IsKeyDown(Keys.Back) ||
-                gamePadState.Buttons.Back == ButtonState.Pressed)
-            {
-                try { Exit(); }
-                catch (PlatformNotSupportedException) { /* ignore */ }
-            }
+            // GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            // if (keyboardState.IsKeyDown(Keys.Escape) ||
+            //     keyboardState.IsKeyDown(Keys.Back) ||
+            //     gamePadState.Buttons.Back == ButtonState.Pressed)
+            // {
+            //     try { Exit(); }
+            //     catch (PlatformNotSupportedException) { /* ignore */ }
+            // }
 
             Vector2 movement = Vector2.Zero;
             if (keyboardState.IsKeyDown(Keys.Left)) movement.X -= 1f;
@@ -80,14 +83,22 @@ namespace GameJam2026
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+        // protected override void Draw(GameTime gameTime)
+        // {
+        //     GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
-            spriteBatch.Draw(pixelTexture, playerRect, Color.Red);
-            spriteBatch.End();
+        //     spriteBatch.Begin();
+        //     spriteBatch.Draw(pixelTexture, playerRect, Color.Red);
+        //     spriteBatch.End();
 
+        //     base.Draw(gameTime);
+        // }
+        
+        protected override void Draw(GameTime gameTime) {
+            graphics.GraphicsDevice.Clear(Color.Black);
+
+            // The real drawing happens inside the screen manager component, which gets called
+            // because it's a component. Neat.
             base.Draw(gameTime);
         }
     }
