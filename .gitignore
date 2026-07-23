@@ -1,0 +1,22 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+
+# Visual Studio user files
+*.user
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+
+# Visual Studio cache/options
+.vs/
+*.rsuser
+*.cache
+
+# Operating System junk
+.DS_Store
+Thumbs.db
+desktop.ini
