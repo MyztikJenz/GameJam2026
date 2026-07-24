@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameJam2026 {
     class CountTakedown : GameScreen {
-        Viewport viewport;
         Texture2D vonCount;
         Texture2D ship;
         Vector2 playerPosition;
@@ -15,7 +14,6 @@ namespace GameJam2026 {
         TitleString titleString;
         Texture2D bullet;
         int score;
-        string instructions = "Move: <- ->, Shoot: Space";
 
         Random random = new Random();
         List<SimpleTracker> bullets = new List<SimpleTracker>();
@@ -62,6 +60,7 @@ namespace GameJam2026 {
                                     pp.BackBufferWidth - screenManager.bombPanelSize + 50, 
                                     pp.BackBufferHeight - screenManager.defusalPanelSize);
 
+            instructions = "Move: <- ->, Shoot: Space";
         }
 
         public override void Load() {
@@ -166,8 +165,6 @@ namespace GameJam2026 {
 
             titleString.Draw(screenManager, gameTime);
 
-            Vector2 textSize = screenManager.font.MeasureString(instructions);
-            Utilities.DrawString(screenManager, instructions, new Vector2(10, viewport.Bounds.Height - textSize.Y - 5));
             base.Draw(gameTime);
         }
 

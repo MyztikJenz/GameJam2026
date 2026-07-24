@@ -5,8 +5,6 @@ using Microsoft.Xna.Framework.Input;
 namespace GameJam2026 {
     class ScoresAndStats : GameScreen {
 
-        Viewport viewport;
-
         public ScoresAndStats(ScreenManager manager) : base(manager) { 
             PresentationParameters pp = screenManager.GraphicsDevice.PresentationParameters;
             viewport = new Viewport(pp.BackBufferWidth - screenManager.bombPanelSize + 50, 0, 

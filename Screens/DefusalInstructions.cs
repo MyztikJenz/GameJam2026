@@ -5,8 +5,6 @@ using Microsoft.Xna.Framework.Input;
 namespace GameJam2026 {
     class DefusalInstructions : GameScreen {
 
-        Viewport viewport;
-
         public DefusalInstructions(ScreenManager manager) : base(manager) { 
             PresentationParameters pp = screenManager.GraphicsDevice.PresentationParameters;
             viewport = new Viewport(0, pp.BackBufferHeight - screenManager.defusalPanelSize,

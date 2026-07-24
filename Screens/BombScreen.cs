@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GameJam2026 {
     class BombScreen : GameScreen {
 
-        Viewport viewport;
         Texture2D bomb;
 
         public BombScreen(ScreenManager mgr) : base(mgr) { 

@@ -6,13 +6,11 @@ using System;
 
 namespace GameJam2026 {
     class DownFeathers : GameScreen {
-        Viewport viewport;
         Vector2 playerPosition;
         Texture2D goose;
         Texture2D background;
         TitleString titleString;
         int score;
-        string instructions = "Move: <- ->";
 
         private List<Feather> sourceFeathers;
         private List<Feather> displayedFeathers = new List<Feather>();
@@ -24,7 +22,8 @@ namespace GameJam2026 {
             viewport = new Viewport(0, 0, 
                                     pp.BackBufferWidth - screenManager.bombPanelSize + 50, 
                                     pp.BackBufferHeight - screenManager.defusalPanelSize);
-
+                                    
+            instructions = "Move: <- ->";
         }
 
         public override void Load() {
@@ -130,9 +129,6 @@ namespace GameJam2026 {
             sb.End();
 
             titleString.Draw(screenManager, gameTime);
-
-            Vector2 textSize = screenManager.font.MeasureString(instructions);
-            Utilities.DrawString(screenManager, instructions, new Vector2(10, viewport.Bounds.Height - textSize.Y - 5));
 
             base.Draw(gameTime);
         }
