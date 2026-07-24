@@ -37,8 +37,6 @@ namespace GameJam2026 {
                                                                 Color.Purple, Color.LightGray);
                 }
             }
-
-
         }
 
         public override void HandleInput(GameTime gameTime, InputState input) {
@@ -58,7 +56,8 @@ namespace GameJam2026 {
             sb.End();
 
             if (isEndScreen) {
-
+                Vector2 strLoc = new Vector2(viewport.Width / 2, viewport.Height / 2 - 50);
+                Utilities.DrawString(screenManager, "Ha Ha YoU sUcK!", strLoc);
             }
             else {
                 // Start screen

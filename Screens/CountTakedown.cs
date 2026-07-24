@@ -15,6 +15,7 @@ namespace GameJam2026 {
         TitleString titleString;
         Texture2D bullet;
         int score;
+        string instructions = "Move: <- ->, Shoot: Space";
 
         Random random = new Random();
         List<SimpleTracker> bullets = new List<SimpleTracker>();
@@ -164,12 +165,9 @@ namespace GameJam2026 {
             sb.End();
 
             titleString.Draw(screenManager, gameTime);
-            // Utilities.DebugString(screenManager, "count: " + vonCountPosition.moveTo + " " + vonCountPosition.X, new Vector2(10, 5));
-            // if (score > 10) {
-            //     Utilities.DebugString(screenManager, "score: " + score, new Vector2(10, 5));
-            // }
 
-            Utilities.DebugString(screenManager, "Move: <- ->, Shoot: Space", new Vector2(10, viewport.Bounds.Height - 15));
+            Vector2 textSize = screenManager.font.MeasureString(instructions);
+            Utilities.DrawString(screenManager, instructions, new Vector2(10, viewport.Bounds.Height - textSize.Y - 5));
             base.Draw(gameTime);
         }
 

@@ -115,26 +115,25 @@ namespace GameJam2026 {
             //     screen.Draw(gameTime);
             // }
 
-            if (gameIsActive) {
-                // Each screen is going to modify the viewport, so we stash the original here and restore it once they're done.
-                viewport = GraphicsDevice.Viewport;
+            // Each screen is going to modify the viewport, so we stash the original here and restore it once they're done.
+            viewport = GraphicsDevice.Viewport;
 
-                // We draw our screens in a very specific order. And we're going to have a fixed number.
-                // 1. Draw the current minigame
-                currentGameScreen.Draw(gameTime);
-                
-                // 2. Draw the score/state panel
-                scoresAndStatsScreen.Draw(gameTime);
+            // We draw our screens in a very specific order. And we're going to have a fixed number.
+            // 1. Draw the current minigame
+            currentGameScreen.Draw(gameTime);
+            
+            // 2. Draw the score/state panel
+            scoresAndStatsScreen.Draw(gameTime);
 
-                // // 3. Draw the defusal panel
-                defusalInstructionsScreen.Draw(gameTime);
+            // // 3. Draw the defusal panel
+            defusalInstructionsScreen.Draw(gameTime);
 
-                // // 4. Draw the bomb panel
-                bombScreen.Draw(gameTime);
+            // // 4. Draw the bomb panel
+            bombScreen.Draw(gameTime);
 
-                GraphicsDevice.Viewport = viewport;
-            }
-            else {
+            GraphicsDevice.Viewport = viewport;
+
+            if (!gameIsActive) {
                 startAndEndScreen.Draw(gameTime);
             }
         }
@@ -152,6 +151,13 @@ namespace GameJam2026 {
                     currentGameScreen = GetNextGame();
                     currentGameScreen.isActive = true;
                 }
+            }
+            else if (screen == disarmTheBombScreen) {
+                // Just a placeholder for a real end-game
+                gameIsActive = false;
+                currentGameScreen.isActive = false;
+                startAndEndScreen.isActive = true;
+                startAndEndScreen.isEndScreen = true;
             }
             else {
                 currentGameScreen.isActive = false;

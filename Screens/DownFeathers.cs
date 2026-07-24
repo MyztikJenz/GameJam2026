@@ -12,6 +12,7 @@ namespace GameJam2026 {
         Texture2D background;
         TitleString titleString;
         int score;
+        string instructions = "Move: <- ->";
 
         private List<Feather> sourceFeathers;
         private List<Feather> displayedFeathers = new List<Feather>();
@@ -129,6 +130,9 @@ namespace GameJam2026 {
             sb.End();
 
             titleString.Draw(screenManager, gameTime);
+
+            Vector2 textSize = screenManager.font.MeasureString(instructions);
+            Utilities.DrawString(screenManager, instructions, new Vector2(10, viewport.Bounds.Height - textSize.Y - 5));
 
             base.Draw(gameTime);
         }
