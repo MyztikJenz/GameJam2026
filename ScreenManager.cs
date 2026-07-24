@@ -60,7 +60,7 @@ namespace GameJam2026 {
             ContentManager content = Game.Content;
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            // font = content.Load<SpriteFont>("menuFont");
+            font = content.Load<SpriteFont>("PressStart2P");
             blankTexture = new Texture2D(GraphicsDevice, 1, 1);
             blankTexture.SetData(new[] { Color.White.PackedValue });
 

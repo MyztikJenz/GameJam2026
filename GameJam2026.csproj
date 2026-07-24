@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <KniContentBuilderExe>dotnet</KniContentBuilderExe>
-    <KniContentBuilderArguments>&quot;$(NuGetPackageRoot)nkast.xna.framework.content.pipeline.builder/4.2.9001/tools/MGCB.dll&quot;</KniContentBuilderArguments>
+    <KniContentBuilderExe>bash</KniContentBuilderExe>
+    <KniContentBuilderArguments>&quot;$(MSBuildProjectDirectory)/Tools/kni-content-builder.sh&quot; &quot;$(NuGetPackageRoot)nkast.xna.framework.content.pipeline.builder/4.2.9001/tools/MGCB.dll&quot;</KniContentBuilderArguments>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

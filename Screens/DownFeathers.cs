@@ -10,7 +10,8 @@ namespace GameJam2026 {
         Viewport viewport;
         Vector2 playerPosition;
         Texture2D goose;
-        // private List<Texture2D> feathers = new List<Texture2D>();
+        Texture2D background;
+        TitleString titleString;
 
         private List<Feather> sourceFeathers;
         private List<Feather> displayedFeathers = new List<Feather>();
@@ -35,6 +36,9 @@ namespace GameJam2026 {
                 displayedFeathers.Add(new Feather(f));
             }
 
+            background = CreateLinearGradient(screenManager.GraphicsDevice, viewport.Bounds.Width, viewport.Bounds.Height, Color.Yellow, Color.Red);
+
+            titleString = new TitleString("Down Feathers, yo");
         }
 
         public override void Unload() { }
@@ -68,6 +72,7 @@ namespace GameJam2026 {
                 displayedFeathers.Add(new Feather(newFeather));
             }
 
+            titleString.Update(gameTime);
         }
 
         public override void HandleInput(GameTime gameTime, InputState input) {
@@ -109,18 +114,38 @@ namespace GameJam2026 {
 
             SpriteBatch sb = screenManager.spriteBatch;
             sb.Begin();
-            sb.Draw(screenManager.blankTexture, new Rectangle(Point.Zero, viewport.Bounds.Size), Color.Yellow);
+            sb.Draw(background, Vector2.Zero, Color.White);
             sb.Draw(goose, playerPosition, Color.White);
 
             foreach (Feather f in displayedFeathers) {
                 f.Draw(screenManager, gameTime);
             }
 
-            // sb.Draw(screenManager.blankTexture, g, Color.Green);
-
             sb.End();
 
+            titleString.Draw(screenManager, gameTime);
+
             base.Draw(gameTime);
+        }
+
+        public Texture2D CreateLinearGradient(GraphicsDevice graphics, int width, int height, Color startColor, Color endColor) {
+            Texture2D texture = new Texture2D(graphics, width, height);
+            Color[] colorData = new Color[width * height];
+
+            for (int y = 0; y < height; y++)
+            {
+                // Calculate interpolation factor along the height (0.0f to 1.0f)
+                float amount = (float)y / (height - 1);
+                Color blendedColor = Color.Lerp(startColor, endColor, amount);
+
+                for (int x = 0; x < width; x++)
+                {
+                    colorData[y * width + x] = blendedColor;
+                }
+            }
+
+            texture.SetData(colorData);
+            return texture;
         }
 
     }

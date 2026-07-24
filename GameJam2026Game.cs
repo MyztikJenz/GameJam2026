@@ -83,17 +83,6 @@ namespace GameJam2026
             base.Update(gameTime);
         }
 
-        // protected override void Draw(GameTime gameTime)
-        // {
-        //     GraphicsDevice.Clear(Color.CornflowerBlue);
-
-        //     spriteBatch.Begin();
-        //     spriteBatch.Draw(pixelTexture, playerRect, Color.Red);
-        //     spriteBatch.End();
-
-        //     base.Draw(gameTime);
-        // }
-        
         protected override void Draw(GameTime gameTime) {
             graphics.GraphicsDevice.Clear(Color.Black);
 

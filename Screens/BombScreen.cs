@@ -5,12 +5,17 @@ namespace GameJam2026 {
     class BombScreen : GameScreen {
 
         Viewport viewport;
+        Texture2D bomb;
 
         public BombScreen(ScreenManager mgr) : base(mgr) { 
             PresentationParameters pp = screenManager.GraphicsDevice.PresentationParameters;
             viewport = new Viewport(pp.BackBufferWidth - screenManager.bombPanelSize, pp.BackBufferHeight - screenManager.bombPanelSize,
                                     screenManager.bombPanelSize, screenManager.bombPanelSize);
 
+        }
+
+        public override void Load() {
+            bomb = screenManager.contentMgr.Load<Texture2D>("bomb");
         }
 
         public override void Draw(GameTime gameTime)
@@ -22,6 +27,7 @@ namespace GameJam2026 {
 
             mgr.spriteBatch.Begin();
             mgr.spriteBatch.Draw(mgr.blankTexture, new Rectangle(Point.Zero, viewport.Bounds.Size), Color.Red);
+            mgr.spriteBatch.Draw(bomb, Point.Zero.ToVector2(), Color.White);
             mgr.spriteBatch.End();
 
             base.Draw(gameTime);
