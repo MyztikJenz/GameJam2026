@@ -27,6 +27,7 @@ namespace GameJam2026 {
         ScoresAndStats scoresAndStatsScreen;
         DownFeathers downFeathersScreen;
         DefusalInstructions defusalInstructionsScreen;
+        CountTakedown countTakedownScreen;
 
         GameScreen currentGameScreen;
 
@@ -44,14 +45,16 @@ namespace GameJam2026 {
             scoresAndStatsScreen = new ScoresAndStats(this);
             downFeathersScreen = new DownFeathers(this);
             defusalInstructionsScreen = new DefusalInstructions(this);
+            countTakedownScreen = new CountTakedown(this);
 
             // Register screens so their Load() methods are called from LoadContent
             screens.Add(bombScreen);
             screens.Add(scoresAndStatsScreen);
             screens.Add(downFeathersScreen);
             screens.Add(defusalInstructionsScreen);
+            screens.Add(countTakedownScreen);
 
-            currentGameScreen = downFeathersScreen;
+            currentGameScreen = countTakedownScreen;
 
             base.Initialize();
         }
@@ -99,7 +102,7 @@ namespace GameJam2026 {
 
             // We draw our screens in a very specific order. And we're going to have a fixed number.
             // 1. Draw the current minigame
-            downFeathersScreen.Draw(gameTime);
+            currentGameScreen.Draw(gameTime);
             
             // 2. Draw the score/state panel
             scoresAndStatsScreen.Draw(gameTime);

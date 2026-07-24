@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
 using System;
 
 namespace GameJam2026 {
@@ -36,9 +35,9 @@ namespace GameJam2026 {
                 displayedFeathers.Add(new Feather(f));
             }
 
-            background = CreateLinearGradient(screenManager.GraphicsDevice, viewport.Bounds.Width, viewport.Bounds.Height, Color.Yellow, Color.Red);
+            background = Utilities.CreateLinearGradient(screenManager.GraphicsDevice, viewport.Bounds.Width, viewport.Bounds.Height, Color.Yellow, Color.Red);
 
-            titleString = new TitleString("Down Feathers, yo");
+            titleString = new TitleString("Down Feathers!");
         }
 
         public override void Unload() { }
@@ -127,27 +126,6 @@ namespace GameJam2026 {
 
             base.Draw(gameTime);
         }
-
-        public Texture2D CreateLinearGradient(GraphicsDevice graphics, int width, int height, Color startColor, Color endColor) {
-            Texture2D texture = new Texture2D(graphics, width, height);
-            Color[] colorData = new Color[width * height];
-
-            for (int y = 0; y < height; y++)
-            {
-                // Calculate interpolation factor along the height (0.0f to 1.0f)
-                float amount = (float)y / (height - 1);
-                Color blendedColor = Color.Lerp(startColor, endColor, amount);
-
-                for (int x = 0; x < width; x++)
-                {
-                    colorData[y * width + x] = blendedColor;
-                }
-            }
-
-            texture.SetData(colorData);
-            return texture;
-        }
-
     }
 }
 

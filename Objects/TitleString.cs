@@ -7,9 +7,13 @@ namespace GameJam2026 {
         private string text;
         private double timer = 0f;
         private double opacity = 1f;
+        private Color bgColor;
+        private Color fgColor;
 
-        public TitleString(string textToDraw) {
+        public TitleString(string textToDraw, Color? bgColor = null, Color? fgColor = null) {
             text = textToDraw;
+            this.bgColor = bgColor.HasValue ? bgColor.Value : Color.White;
+            this.fgColor = fgColor.HasValue ? fgColor.Value : Color.Black;
         }
 
         public void Update(GameTime gameTime) {
@@ -28,8 +32,8 @@ namespace GameJam2026 {
 
             SpriteBatch sb = mgr.spriteBatch;
             sb.Begin(samplerState: SamplerState.PointClamp);
-            sb.DrawString(mgr.font, text, new Vector2(1, 1), Color.White * (float)opacity, 0f, Vector2.Zero, 2.5f, SpriteEffects.None, 0f);
-            sb.DrawString(mgr.font, text, new Vector2(4, 4), Color.Black * (float)opacity, 0f, Vector2.Zero, 2.5f, SpriteEffects.None, 0f);
+            sb.DrawString(mgr.font, text, new Vector2(5, 5), bgColor * (float)opacity, 0f, Vector2.Zero, 2.5f, SpriteEffects.None, 0f);
+            sb.DrawString(mgr.font, text, new Vector2(8, 8), fgColor * (float)opacity, 0f, Vector2.Zero, 2.5f, SpriteEffects.None, 0f);
             sb.End();
 
         }
