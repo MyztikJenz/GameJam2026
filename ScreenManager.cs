@@ -14,15 +14,21 @@ namespace GameJam2026 {
         public SpriteFont font { get; private set; }
         public Texture2D blankTexture { get; private set; }
 
+        public ContentManager contentMgr { get; private set; }
+
+
         public readonly int bombPanelSize = 400;
         public readonly int defusalPanelSize = 150;
 
         Viewport viewport;
 
+
         BombScreen bombScreen;
         ScoresAndStats scoresAndStatsScreen;
         DownFeathers downFeathersScreen;
         DefusalInstructions defusalInstructionsScreen;
+
+        GameScreen currentGameScreen;
 
         public ScreenManager(Game game) : base(game) {
         }
@@ -32,10 +38,20 @@ namespace GameJam2026 {
         // }
 
         public override void Initialize() {
+            contentMgr = new ContentManager(this.Game.Services, "Content");
+
             bombScreen = new BombScreen(this);
             scoresAndStatsScreen = new ScoresAndStats(this);
             downFeathersScreen = new DownFeathers(this);
             defusalInstructionsScreen = new DefusalInstructions(this);
+
+            // Register screens so their Load() methods are called from LoadContent
+            screens.Add(bombScreen);
+            screens.Add(scoresAndStatsScreen);
+            screens.Add(downFeathersScreen);
+            screens.Add(defusalInstructionsScreen);
+
+            currentGameScreen = downFeathersScreen;
 
             base.Initialize();
         }
@@ -60,6 +76,12 @@ namespace GameJam2026 {
         public override void Update(GameTime gameTime) {
             input.Update();
 
+            currentGameScreen.HandleInput(gameTime, input);
+            bombScreen.HandleInput(gameTime, input);
+
+            foreach (GameScreen screen in screens) {
+                screen.Update(gameTime);
+            }
             // For each screen we need to update it. 
             // Since our screens are going to be composed, we need to ensure the subscreens are
             // appropriately marked as who's getting input. And where they can draw.
