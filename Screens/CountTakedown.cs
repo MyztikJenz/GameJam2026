@@ -107,6 +107,10 @@ namespace GameJam2026 {
             foreach (SimpleTracker bullet in bulletsToRemove) {
                 bullets.Remove(bullet);
             }
+
+            if (score >= 10) {
+                screenManager.GameHasFinished(this);
+            }
         }
 
         public override void HandleInput(GameTime gameTime, InputState input) {
@@ -161,9 +165,9 @@ namespace GameJam2026 {
 
             titleString.Draw(screenManager, gameTime);
             // Utilities.DebugString(screenManager, "count: " + vonCountPosition.moveTo + " " + vonCountPosition.X, new Vector2(10, 5));
-            if (score > 10) {
-                Utilities.DebugString(screenManager, "score: " + score, new Vector2(10, 5));
-            }
+            // if (score > 10) {
+            //     Utilities.DebugString(screenManager, "score: " + score, new Vector2(10, 5));
+            // }
 
             Utilities.DebugString(screenManager, "Move: <- ->, Shoot: Space", new Vector2(10, viewport.Bounds.Height - 15));
             base.Draw(gameTime);

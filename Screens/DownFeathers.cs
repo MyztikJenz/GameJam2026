@@ -11,6 +11,7 @@ namespace GameJam2026 {
         Texture2D goose;
         Texture2D background;
         TitleString titleString;
+        int score;
 
         private List<Feather> sourceFeathers;
         private List<Feather> displayedFeathers = new List<Feather>();
@@ -54,6 +55,7 @@ namespace GameJam2026 {
                 f.Update(gameTime);
 
                 if (f.Intersects(g)) {
+                    score += 1;
                     feathersToRemove.Add(f);
                 }
 
@@ -72,6 +74,10 @@ namespace GameJam2026 {
             }
 
             titleString.Update(gameTime);
+
+            if (score >= 10) {
+                screenManager.GameHasFinished(this);
+            }
         }
 
         public override void HandleInput(GameTime gameTime, InputState input) {

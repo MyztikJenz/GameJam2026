@@ -22,12 +22,20 @@ namespace GameJam2026 {
             return texture;
         }
 
-        public static void DebugString(ScreenManager mgr, string text, Vector2 location) {
+        private static void _drawString(ScreenManager mgr, string text, Vector2 location, Color color) {
             SpriteBatch sb = mgr.spriteBatch;
             sb.Begin(samplerState: SamplerState.PointClamp);
-            sb.DrawString(mgr.font, text, location, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            sb.DrawString(mgr.font, text, location, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             sb.End();
+        }
 
+        public static void DrawString(ScreenManager mgr, string text, Vector2 location, Color? color = null) {
+            Color textColor = color.HasValue ? color.Value : Color.White;
+            _drawString(mgr, text, location, textColor);
+        }
+
+        public static void DebugString(ScreenManager mgr, string text, Vector2 location) {
+            _drawString(mgr, text, location, Color.White);
         }
 
     }

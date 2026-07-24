@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -8,6 +9,8 @@ namespace GameJam2026 {
 
         private readonly List<GameScreen> screens = new List<GameScreen>();
         private readonly List<GameScreen> tempScreensList = new List<GameScreen>();
+        private readonly List<GameScreen> gamesToPlay = new List<GameScreen>();
+
 
         private readonly InputState input = new InputState();
         public SpriteBatch spriteBatch { get; private set; }
@@ -20,14 +23,17 @@ namespace GameJam2026 {
         public readonly int bombPanelSize = 400;
         public readonly int defusalPanelSize = 150;
 
+        bool gameIsActive = false;
+
         Viewport viewport;
 
-
+        StartAndEndScreen startAndEndScreen;
         BombScreen bombScreen;
         ScoresAndStats scoresAndStatsScreen;
         DownFeathers downFeathersScreen;
         DefusalInstructions defusalInstructionsScreen;
         CountTakedown countTakedownScreen;
+        DisarmTheBomb disarmTheBombScreen;
 
         GameScreen currentGameScreen;
 
@@ -41,18 +47,27 @@ namespace GameJam2026 {
         public override void Initialize() {
             contentMgr = new ContentManager(this.Game.Services, "Content");
 
-            bombScreen = new BombScreen(this);
+            startAndEndScreen = new StartAndEndScreen(this)
+            {
+                isActive = true
+            };
+            bombScreen = new BombScreen(this) { 
+                isActive = true 
+            };
             scoresAndStatsScreen = new ScoresAndStats(this);
             downFeathersScreen = new DownFeathers(this);
             defusalInstructionsScreen = new DefusalInstructions(this);
             countTakedownScreen = new CountTakedown(this);
+            disarmTheBombScreen = new DisarmTheBomb(this);
 
             // Register screens so their Load() methods are called from LoadContent
+            screens.Add(startAndEndScreen);
             screens.Add(bombScreen);
             screens.Add(scoresAndStatsScreen);
             screens.Add(downFeathersScreen);
             screens.Add(defusalInstructionsScreen);
             screens.Add(countTakedownScreen);
+            screens.Add(disarmTheBombScreen);
 
             currentGameScreen = countTakedownScreen;
 
@@ -79,11 +94,14 @@ namespace GameJam2026 {
         public override void Update(GameTime gameTime) {
             input.Update();
 
+            startAndEndScreen.HandleInput(gameTime, input);
             currentGameScreen.HandleInput(gameTime, input);
             bombScreen.HandleInput(gameTime, input);
 
             foreach (GameScreen screen in screens) {
-                screen.Update(gameTime);
+                if (screen.isActive) {
+                    screen.Update(gameTime);
+                }
             }
             // For each screen we need to update it. 
             // Since our screens are going to be composed, we need to ensure the subscreens are
@@ -97,23 +115,71 @@ namespace GameJam2026 {
             //     screen.Draw(gameTime);
             // }
 
-            // Each screen is going to modify the viewport, so we stash the original here and restore it once they're done.
-            viewport = GraphicsDevice.Viewport;
+            if (gameIsActive) {
+                // Each screen is going to modify the viewport, so we stash the original here and restore it once they're done.
+                viewport = GraphicsDevice.Viewport;
 
-            // We draw our screens in a very specific order. And we're going to have a fixed number.
-            // 1. Draw the current minigame
-            currentGameScreen.Draw(gameTime);
-            
-            // 2. Draw the score/state panel
-            scoresAndStatsScreen.Draw(gameTime);
+                // We draw our screens in a very specific order. And we're going to have a fixed number.
+                // 1. Draw the current minigame
+                currentGameScreen.Draw(gameTime);
+                
+                // 2. Draw the score/state panel
+                scoresAndStatsScreen.Draw(gameTime);
 
-            // // 3. Draw the defusal panel
-            defusalInstructionsScreen.Draw(gameTime);
+                // // 3. Draw the defusal panel
+                defusalInstructionsScreen.Draw(gameTime);
 
-            // // 4. Draw the bomb panel
-            bombScreen.Draw(gameTime);
+                // // 4. Draw the bomb panel
+                bombScreen.Draw(gameTime);
 
-            GraphicsDevice.Viewport = viewport;
+                GraphicsDevice.Viewport = viewport;
+            }
+            else {
+                startAndEndScreen.Draw(gameTime);
+            }
+        }
+
+        // Called when a game has completed. Time to move on.
+        internal void GameHasFinished(GameScreen screen) {
+            if (screen == startAndEndScreen) {
+                if (startAndEndScreen.isEndScreen) {
+
+                }
+                else {
+                    gameIsActive = true;
+                    startAndEndScreen.isActive = false;
+                    WhichGamesToPlay();
+                    currentGameScreen = GetNextGame();
+                    currentGameScreen.isActive = true;
+                }
+            }
+            else {
+                currentGameScreen.isActive = false;
+                currentGameScreen = GetNextGame();
+                currentGameScreen.isActive = true;
+            }
+        }
+
+        internal GameScreen GetNextGame() {
+            if (gamesToPlay.Count == 0) {
+                // They just need to disarm the bomb
+                // We'll eventually draw something pointing them to the bomb
+                return disarmTheBombScreen;
+            }
+            else {
+                GameScreen gs = gamesToPlay[0];
+                gamesToPlay.RemoveAt(0);
+                return gs;
+            }
+        }
+
+        internal void WhichGamesToPlay() {
+            gamesToPlay.Clear();
+
+            // TODO: This will need to be smarter once we get more games finished
+            gamesToPlay.Add(downFeathersScreen);
+            gamesToPlay.Add(countTakedownScreen);
+
         }
 
     }
