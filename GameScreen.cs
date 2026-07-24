@@ -10,6 +10,13 @@ namespace GameJam2026 {
 
         public GameScreen(ScreenManager mgr) {
             screenManager = mgr;
+
+            // The default viewport is for the game scene. Unique scenes will set their own.
+            PresentationParameters pp = screenManager.GraphicsDevice.PresentationParameters;
+            viewport = new Viewport(0, 0, 
+                                    pp.BackBufferWidth - screenManager.bombPanelSize + 50, 
+                                    pp.BackBufferHeight - screenManager.defusalPanelSize);
+
         }
 
         public virtual void Deactivate() { }

@@ -34,6 +34,9 @@ namespace GameJam2026 {
         DefusalInstructions defusalInstructionsScreen;
         CountTakedown countTakedownScreen;
         DisarmTheBomb disarmTheBombScreen;
+        Hangman hangmanScreen;
+        LongWayDown longWayDownScreen;
+        WordCount wordCountScreen;
 
         GameScreen currentGameScreen;
 
@@ -59,6 +62,10 @@ namespace GameJam2026 {
             defusalInstructionsScreen = new DefusalInstructions(this);
             countTakedownScreen = new CountTakedown(this);
             disarmTheBombScreen = new DisarmTheBomb(this);
+            hangmanScreen = new Hangman(this);
+            longWayDownScreen = new LongWayDown(this);
+            wordCountScreen = new WordCount(this);
+
 
             // Register screens so their Load() methods are called from LoadContent
             screens.Add(startAndEndScreen);
@@ -68,8 +75,9 @@ namespace GameJam2026 {
             screens.Add(defusalInstructionsScreen);
             screens.Add(countTakedownScreen);
             screens.Add(disarmTheBombScreen);
-
-            currentGameScreen = countTakedownScreen;
+            screens.Add(hangmanScreen);
+            screens.Add(longWayDownScreen);
+            screens.Add(wordCountScreen);
 
             base.Initialize();
         }
@@ -95,7 +103,9 @@ namespace GameJam2026 {
             input.Update();
 
             startAndEndScreen.HandleInput(gameTime, input);
-            currentGameScreen.HandleInput(gameTime, input);
+            if (currentGameScreen != null) {
+                currentGameScreen.HandleInput(gameTime, input);
+            }
             bombScreen.HandleInput(gameTime, input);
 
             foreach (GameScreen screen in screens) {
@@ -118,20 +128,22 @@ namespace GameJam2026 {
             // Each screen is going to modify the viewport, so we stash the original here and restore it once they're done.
             viewport = GraphicsDevice.Viewport;
 
-            // We draw our screens in a very specific order. And we're going to have a fixed number.
-            // 1. Draw the current minigame
-            currentGameScreen.Draw(gameTime);
-            
-            // 2. Draw the score/state panel
-            scoresAndStatsScreen.Draw(gameTime);
+            if (currentGameScreen != null) {
+                // We draw our screens in a very specific order. And we're going to have a fixed number.
+                // 1. Draw the current minigame
+                currentGameScreen.Draw(gameTime);
+                
+                // 2. Draw the score/state panel
+                scoresAndStatsScreen.Draw(gameTime);
 
-            // // 3. Draw the defusal panel
-            defusalInstructionsScreen.Draw(gameTime);
+                // // 3. Draw the defusal panel
+                defusalInstructionsScreen.Draw(gameTime);
 
-            // // 4. Draw the bomb panel
-            bombScreen.Draw(gameTime);
+                // // 4. Draw the bomb panel
+                bombScreen.Draw(gameTime);
 
-            GraphicsDevice.Viewport = viewport;
+                GraphicsDevice.Viewport = viewport;
+            }
 
             if (!gameIsActive) {
                 startAndEndScreen.Draw(gameTime);
@@ -183,6 +195,7 @@ namespace GameJam2026 {
             gamesToPlay.Clear();
 
             // TODO: This will need to be smarter once we get more games finished
+            gamesToPlay.Add(wordCountScreen);
             gamesToPlay.Add(downFeathersScreen);
             gamesToPlay.Add(countTakedownScreen);
 

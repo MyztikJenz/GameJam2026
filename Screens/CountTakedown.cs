@@ -55,11 +55,6 @@ namespace GameJam2026 {
         SpritePositioning vonCountPosition;
         
         public CountTakedown(ScreenManager manager) : base(manager) { 
-            PresentationParameters pp = screenManager.GraphicsDevice.PresentationParameters;
-            viewport = new Viewport(0, 0, 
-                                    pp.BackBufferWidth - screenManager.bombPanelSize + 50, 
-                                    pp.BackBufferHeight - screenManager.defusalPanelSize);
-
             instructions = "Move: <- ->, Shoot: Space";
         }
 
