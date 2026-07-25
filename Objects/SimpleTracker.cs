@@ -12,6 +12,9 @@ namespace GameJam2026 {
         internal int xSpeed = 50;
         internal int ySpeed = 50;
 
+        private float lastXMove;
+        private float lastYMove;
+
         public SimpleTracker(Texture2D t, Vector2 initialPosition, Vector2 moveTo) {
             texture = t;
             position = initialPosition;
@@ -20,6 +23,9 @@ namespace GameJam2026 {
 
         public void Update(GameTime gameTime) {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            lastXMove = (float)xSpeed * deltaTime;
+            lastYMove = (float)ySpeed * deltaTime;
+
             if (Math.Abs(position.X - moveTo.X) > (float)xSpeed * deltaTime) {
                 if (moveTo.X < position.X) {
                     position.X -= (float)xSpeed * deltaTime;
@@ -45,7 +51,15 @@ namespace GameJam2026 {
         }
 
         public bool HasArrived() {
-            return (Math.Abs(position.X - moveTo.X) < 2 && Math.Abs(position.Y - moveTo.Y) < 2);
+            // return Math.Abs(position.X - moveTo.X) < 2 && Math.Abs(position.Y - moveTo.Y) < 2;
+
+            return Math.Abs(position.X - moveTo.X) <= lastXMove &&
+                   Math.Abs(position.Y - moveTo.Y) <= lastYMove;
+        }
+
+        public void SetSpeed(int speed) {
+            xSpeed = speed;
+            ySpeed = speed;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GameJam2026 {
     public class ScreenManager : DrawableGameComponent {
@@ -39,6 +40,8 @@ namespace GameJam2026 {
         WordCount wordCountScreen;
 
         GameScreen currentGameScreen;
+
+        public SoundEffect buzzer;
 
         public ScreenManager(Game game) : base(game) {
         }
@@ -78,6 +81,8 @@ namespace GameJam2026 {
             screens.Add(hangmanScreen);
             screens.Add(longWayDownScreen);
             screens.Add(wordCountScreen);
+
+            buzzer = contentMgr.Load<SoundEffect>("sounds/yusuf_sfx-wrong-buzzer-double-491796");
 
             base.Initialize();
         }
@@ -121,10 +126,6 @@ namespace GameJam2026 {
         }
 
         public override void Draw(GameTime gameTime) {
-            // foreach (GameScreen screen in screens) {
-            //     screen.Draw(gameTime);
-            // }
-
             // Each screen is going to modify the viewport, so we stash the original here and restore it once they're done.
             viewport = GraphicsDevice.Viewport;
 
@@ -148,6 +149,8 @@ namespace GameJam2026 {
             if (!gameIsActive) {
                 startAndEndScreen.Draw(gameTime);
             }
+
+            Utilities.DebugString(this, viewport.Bounds.ToString(), Vector2.One);
         }
 
         // Called when a game has completed. Time to move on.
