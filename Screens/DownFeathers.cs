@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GameJam2026 {
     class DownFeathers : GameScreen {
@@ -16,6 +17,9 @@ namespace GameJam2026 {
         private List<Feather> displayedFeathers = new List<Feather>();
 
         Rectangle g;
+        SoundEffect gooseSfx;
+        SoundEffectInstance gooseSfxInstance;
+
        
         public DownFeathers(ScreenManager manager) : base(manager) { 
             instructions = "Move: <- ->";
@@ -34,6 +38,9 @@ namespace GameJam2026 {
             background = Utilities.CreateLinearGradient(screenManager.GraphicsDevice, viewport.Bounds.Width, viewport.Bounds.Height, Color.Yellow, Color.Red);
 
             titleString = new TitleString("Down Feathers!");
+
+            gooseSfx = screenManager.contentMgr.Load<SoundEffect>("sounds/jasonlee3071-goose-honking-532228");
+            gooseSfxInstance = gooseSfx.CreateInstance();
         }
 
         public override void Unload() { }
@@ -69,6 +76,10 @@ namespace GameJam2026 {
             }
 
             titleString.Update(gameTime);
+
+            if (score == 1 && gooseSfxInstance.State != SoundState.Playing) {
+                gooseSfxInstance.Play();
+            }
 
             if (score >= 10) {
                 screenManager.GameHasFinished(this);

@@ -71,5 +71,22 @@ namespace GameJam2026 {
             return currentMouseStates[x].Position;
         }
 
+        public int? isNumberKeyPressed(PlayerIndex idx = PlayerIndex.One) {
+            int x = (int)idx;
+            int? numPressed = null;
+            if (isNewKeyPress(Keys.D0) || isNewKeyPress(Keys.NumPad0)) { numPressed = 0; }
+            if (isNewKeyPress(Keys.D1) || isNewKeyPress(Keys.NumPad1)) { numPressed = 1; }
+            if (isNewKeyPress(Keys.D2) || isNewKeyPress(Keys.NumPad2)) { numPressed = 2; }
+            if (isNewKeyPress(Keys.D3) || isNewKeyPress(Keys.NumPad3)) { numPressed = 3; }
+            if (isNewKeyPress(Keys.D4) || isNewKeyPress(Keys.NumPad4)) { numPressed = 4; }
+            if (isNewKeyPress(Keys.D5) || isNewKeyPress(Keys.NumPad5)) { numPressed = 5; }
+            if (isNewKeyPress(Keys.D6) || isNewKeyPress(Keys.NumPad6)) { numPressed = 6; }
+            if (isNewKeyPress(Keys.D7) || isNewKeyPress(Keys.NumPad7)) { numPressed = 7; }
+            if (isNewKeyPress(Keys.D8) || isNewKeyPress(Keys.NumPad8)) { numPressed = 8; }
+            if (isNewKeyPress(Keys.D9) || isNewKeyPress(Keys.NumPad9)) { numPressed = 9; }
+
+            return numPressed;
+        }
+
     }
 }

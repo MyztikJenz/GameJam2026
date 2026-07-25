@@ -5,6 +5,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+
 
 // To see some the possible results, copy the text of words.txt to the pasteboard, then:
 // pbpaste | sort | grep -E -w '\w{5}'
@@ -17,7 +19,6 @@ namespace GameJam2026 {
         List<string> gameWords = new List<string>();
         Strategies strategy;
         int answer;
-        Texture2D background;
         public SpriteFont chalkFont { get; private set; }
         float blinkTimer;
         Rectangle blinkRect;
@@ -26,7 +27,8 @@ namespace GameJam2026 {
         
         int leftColumn = 0;
         int rightColumn = 0;
-        int bottomMargin = 0;
+
+        SoundEffect buzzer;
 
         // Count of words with N letters
         // Count of words with [AEIOU]
@@ -58,6 +60,7 @@ namespace GameJam2026 {
             chalkFont = screenManager.contentMgr.Load<SpriteFont>("Chalkduster");
             blinkRect = new Rectangle(viewport.Bounds.Right - 250, viewport.Bounds.Bottom - 40, 100, 10);
 
+            buzzer = screenManager.contentMgr.Load<SoundEffect>("sounds/yusuf_sfx-wrong-buzzer-double-491796");
         }
 
         public override void Update(GameTime gameTime) {
@@ -82,16 +85,14 @@ namespace GameJam2026 {
             int playerIdx = (int)PlayerIndex.One;
             KeyboardState kState = input.currentKeyboardStates[playerIdx];
 
-            if (kState.IsKeyDown(Keys.D0) || kState.IsKeyDown(Keys.NumPad0)) { typedAnswer = 0; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D1) || kState.IsKeyDown(Keys.NumPad1)) { typedAnswer = 1; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D2) || kState.IsKeyDown(Keys.NumPad2)) { typedAnswer = 2; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D3) || kState.IsKeyDown(Keys.NumPad3)) { typedAnswer = 3; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D4) || kState.IsKeyDown(Keys.NumPad4)) { typedAnswer = 4; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D5) || kState.IsKeyDown(Keys.NumPad5)) { typedAnswer = 5; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D6) || kState.IsKeyDown(Keys.NumPad6)) { typedAnswer = 6; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D7) || kState.IsKeyDown(Keys.NumPad7)) { typedAnswer = 7; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D8) || kState.IsKeyDown(Keys.NumPad8)) { typedAnswer = 8; typedAnswerTimer = 1f; }
-            if (kState.IsKeyDown(Keys.D9) || kState.IsKeyDown(Keys.NumPad9)) { typedAnswer = 9; typedAnswerTimer = 1f; }
+            int? numPressed = input.isNumberKeyPressed();
+            if (numPressed.HasValue) {
+                typedAnswer = numPressed.Value;
+                typedAnswerTimer = 1f;
+                if (typedAnswer != answer) {
+                    buzzer.Play();
+                }
+            }
 
             if (typedAnswer == answer) {
                 screenManager.GameHasFinished(this);

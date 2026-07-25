@@ -16,6 +16,26 @@
 #begin words.txt
 /copy:words.txt
 
+#begin sounds/yusuf_sfx-wrong-buzzer-double-491796.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/build:sounds/yusuf_sfx-wrong-buzzer-double-491796.mp3
+
+#begin sounds/jasonlee3071-goose-honking-532228.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/build:sounds/jasonlee3071-goose-honking-532228.mp3
+
+#begin sounds/123-4.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/build:sounds/123-4.mp3
+
+#begin sounds/freesound_community-pew-pew-two-102442-edited.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/build:sounds/freesound_community-pew-pew-two-102442-edited.mp3
+
 #begin PressStart2P.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

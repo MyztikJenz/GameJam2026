@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+using Microsoft.Xna.Framework.Audio;
 
 namespace GameJam2026 {
     class CountTakedown : GameScreen {
@@ -18,6 +18,10 @@ namespace GameJam2026 {
         Random random = new Random();
         List<SimpleTracker> bullets = new List<SimpleTracker>();
 
+        SoundEffect countToFour;
+        SoundEffect pewPew;
+        SoundEffectInstance pewPewInstance;
+        SoundEffectInstance countToFourInstance;
 
         private struct SpritePositioning {
             internal float X { get; private set; }
@@ -69,6 +73,10 @@ namespace GameJam2026 {
             background = Utilities.CreateLinearGradient(screenManager.GraphicsDevice, viewport.Bounds.Width, viewport.Bounds.Height, Color.Black, Color.DarkBlue);
             titleString = new TitleString("Take Down von Count!", Color.Red, Color.White);
 
+            countToFour = screenManager.contentMgr.Load<SoundEffect>("sounds/123-4");
+            countToFourInstance = countToFour.CreateInstance();
+            pewPew = screenManager.contentMgr.Load<SoundEffect>("sounds/freesound_community-pew-pew-two-102442-edited");
+            pewPewInstance = pewPew.CreateInstance();
         }
 
         public override void Update(GameTime gameTime) {
@@ -101,6 +109,10 @@ namespace GameJam2026 {
 
             foreach (SimpleTracker bullet in bulletsToRemove) {
                 bullets.Remove(bullet);
+            }
+
+            if (score == 4 && countToFourInstance.State != SoundState.Playing) {
+                countToFourInstance.Play();
             }
 
             if (score >= 10) {
@@ -171,6 +183,10 @@ namespace GameJam2026 {
             b.ySpeed = 300;
 
             bullets.Add(b);
+
+            if (pewPewInstance.State == SoundState.Stopped) {
+                pewPewInstance.Play();
+            }
         }
     }
 }
