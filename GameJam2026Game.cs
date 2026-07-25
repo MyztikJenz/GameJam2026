@@ -3,9 +3,12 @@ using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GameJam2026
-{
+
+namespace GameJam2026 {
+
     public class GameJam2026Game : Game {
+        public static Game GameObj;
+
         public const int FixedWidth = 1465;
         public const int FixedHeight = 768;
 
@@ -20,6 +23,8 @@ namespace GameJam2026
 
             screenManager = new ScreenManager(this);
             Components.Add(screenManager);
+
+            GameObj = this;
         }
 
         protected override void Initialize() {

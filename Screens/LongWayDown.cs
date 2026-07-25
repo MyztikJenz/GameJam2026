@@ -46,6 +46,7 @@ namespace GameJam2026 {
 
         public LongWayDown(ScreenManager manager) : base(manager) {
             instructions = "Move: <- ->, Type: numbers, then Enter";
+            id = "B6FA04CE-B76B-4772-BCFA-C0993965EBE5";
         }
 
         public override void Load() {

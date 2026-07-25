@@ -7,6 +7,7 @@ namespace GameJam2026 {
         public bool isActive { get; set; } = false;
         public string instructions { get; set; } = "";
         public Viewport viewport { get; set; }
+        public string id { get; set; }
 
         public GameScreen(ScreenManager mgr) {
             screenManager = mgr;

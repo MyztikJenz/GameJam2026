@@ -24,6 +24,7 @@ namespace GameJam2026 {
         Rectangle blinkRect;
         int typedAnswer = 999;
         float typedAnswerTimer;
+        TitleString titleString;
         
         int leftColumn = 0;
         int rightColumn = 0;
@@ -44,6 +45,7 @@ namespace GameJam2026 {
         }        
 
         public WordCount(ScreenManager manager) : base(manager) { 
+            id = "8D656081-A9CB-4465-99E6-8B1C01CC0738";
         }
 
         public override void Load() {
@@ -56,6 +58,8 @@ namespace GameJam2026 {
                     words.Add(word.Trim());
                 }
             }
+
+            titleString = new TitleString("Can You Count?!");
 
             chalkFont = screenManager.contentMgr.Load<SpriteFont>("Chalkduster");
             blinkRect = new Rectangle(viewport.Bounds.Right - 250, viewport.Bounds.Bottom - 40, 100, 10);

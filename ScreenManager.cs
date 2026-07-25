@@ -16,6 +16,8 @@ namespace GameJam2026 {
         private readonly InputState input = new InputState();
         public SpriteBatch spriteBatch { get; private set; }
         public SpriteFont font { get; private set; }
+        internal SpriteFont cursedTimerFont { get; private set; }
+        internal SpriteFont cursedTimerSmallFont { get; private set; }
         public Texture2D blankTexture { get; private set; }
 
         public ContentManager contentMgr { get; private set; }
@@ -42,6 +44,7 @@ namespace GameJam2026 {
         GameScreen currentGameScreen;
 
         IBombScreenService bombService;
+        IScoresAndStatsInterface scoresAndStatsInterface;
 
         public SoundEffect buzzer;
 
@@ -55,14 +58,15 @@ namespace GameJam2026 {
         public override void Initialize() {
             contentMgr = new ContentManager(this.Game.Services, "Content");
 
-            startAndEndScreen = new StartAndEndScreen(this)
-            {
+            startAndEndScreen = new StartAndEndScreen(this) {
                 isActive = true
             };
             bombScreen = new BombScreen(this) { 
                 isActive = true 
             };
-            scoresAndStatsScreen = new ScoresAndStats(this);
+            scoresAndStatsScreen = new ScoresAndStats(this) {
+                isActive = true
+            };
             downFeathersScreen = new DownFeathers(this);
             defusalInstructionsScreen = new DefusalInstructions(this);
             countTakedownScreen = new CountTakedown(this);
@@ -89,6 +93,7 @@ namespace GameJam2026 {
             }
 
             bombService = Game.Services.GetService(typeof(IBombScreenService)) as IBombScreenService;
+            scoresAndStatsInterface = Game.Services.GetService(typeof(IScoresAndStatsInterface)) as IScoresAndStatsInterface;
 
             buzzer = contentMgr.Load<SoundEffect>("sounds/yusuf_sfx-wrong-buzzer-double-491796");
 
@@ -100,6 +105,8 @@ namespace GameJam2026 {
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = content.Load<SpriteFont>("PressStart2P");
+            cursedTimerFont = content.Load<SpriteFont>("CursedTimer");
+            cursedTimerSmallFont = content.Load<SpriteFont>("CursedTimerSmall");
             blankTexture = new Texture2D(GraphicsDevice, 1, 1);
             blankTexture.SetData(new[] { Color.White.PackedValue });
 
@@ -165,6 +172,15 @@ namespace GameJam2026 {
             // Utilities.DebugString(this, viewport.Bounds.ToString(), Vector2.One);
         }
 
+        public void BombExploded() {
+            gameIsActive = false;
+            currentGameScreen.isActive = false;
+            startAndEndScreen.isActive = true;
+            startAndEndScreen.isEndScreen = true;
+
+            scoresAndStatsInterface.GameFailed(GameDetails.FindGameWithID(currentGameScreen.id));
+        }
+
         // Called when a game has completed. Time to move on.
         internal void GameHasFinished(GameScreen screen) {
             if (screen == startAndEndScreen) {
@@ -172,11 +188,15 @@ namespace GameJam2026 {
 
                 }
                 else {
+                    // Starting a new game
+                    bombService.GameStarted();
                     gameIsActive = true;
                     startAndEndScreen.isActive = false;
                     WhichGamesToPlay();
                     currentGameScreen = GetNextGame();
                     currentGameScreen.isActive = true;
+
+                    scoresAndStatsInterface.GameStarted(GameDetails.FindGameWithID(currentGameScreen.id));
                 }
             }
             else if (screen == disarmTheBombScreen) {
@@ -191,6 +211,8 @@ namespace GameJam2026 {
                 currentGameScreen.isActive = false;
                 currentGameScreen = GetNextGame();
                 currentGameScreen.isActive = true;
+
+                scoresAndStatsInterface.GameStarted(GameDetails.FindGameWithID(currentGameScreen.id));
             }
         }
 

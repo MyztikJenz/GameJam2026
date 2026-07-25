@@ -25,6 +25,7 @@ namespace GameJam2026 {
        
         public DownFeathers(ScreenManager manager) : base(manager) { 
             instructions = "Move: <- ->";
+            id = "A696084A-375C-427A-9723-2913FCA99969";
         }
 
         public override void Load() {

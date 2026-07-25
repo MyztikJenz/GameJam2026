@@ -60,6 +60,7 @@ namespace GameJam2026 {
         
         public CountTakedown(ScreenManager manager) : base(manager) { 
             instructions = "Move: <- ->, Shoot: Space";
+            id = "E6078C10-2ECE-437D-A984-EE93F7D9BE07";
         }
 
         public override void Load() {
