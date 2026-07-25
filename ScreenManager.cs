@@ -129,25 +129,29 @@ namespace GameJam2026 {
             // Each screen is going to modify the viewport, so we stash the original here and restore it once they're done.
             viewport = GraphicsDevice.Viewport;
 
-            if (currentGameScreen != null) {
-                // We draw our screens in a very specific order. And we're going to have a fixed number.
-                // 1. Draw the current minigame
-                currentGameScreen.Draw(gameTime);
-                
-                // 2. Draw the score/state panel
-                scoresAndStatsScreen.Draw(gameTime);
+            try {
+                if (currentGameScreen != null) {
+                    // We draw our screens in a very specific order. And we're going to have a fixed number.
+                    // 1. Draw the current minigame
+                    currentGameScreen.Draw(gameTime);
+                    
+                    // 2. Draw the score/state panel
+                    scoresAndStatsScreen.Draw(gameTime);
 
-                // // 3. Draw the defusal panel
-                defusalInstructionsScreen.Draw(gameTime);
+                    // // 3. Draw the defusal panel
+                    defusalInstructionsScreen.Draw(gameTime);
 
-                // // 4. Draw the bomb panel
-                bombScreen.Draw(gameTime);
+                    // // 4. Draw the bomb panel
+                    bombScreen.Draw(gameTime);
+                }
 
-                GraphicsDevice.Viewport = viewport;
+                if (!gameIsActive) {
+                    GraphicsDevice.Viewport = viewport;
+                    startAndEndScreen.Draw(gameTime);
+                }
             }
-
-            if (!gameIsActive) {
-                startAndEndScreen.Draw(gameTime);
+            finally {
+                GraphicsDevice.Viewport = viewport;
             }
 
             Utilities.DebugString(this, viewport.Bounds.ToString(), Vector2.One);

@@ -1,83 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
 
 namespace GameJam2026
 {
-    public class GameJam2026Game : Game
-    {
+    public class GameJam2026Game : Game {
+        public const int FixedWidth = 1465;
+        public const int FixedHeight = 768;
+
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        Texture2D pixelTexture;
-        Rectangle playerRect;
-        const int PlayerSize = 50;
-        const float PlayerSpeed = 300f;
-
         ScreenManager screenManager;
+        bool resizing;
 
-        public GameJam2026Game()
-        {
+        public GameJam2026Game() {
             graphics = new GraphicsDeviceManager(this);
+            ConfigureFixedBackBuffer();
             Content.RootDirectory = "Content";
 
             screenManager = new ScreenManager(this);
             Components.Add(screenManager);
         }
 
-        protected override void Initialize()
-        {
-            // TODO: Add your initialization logic here
-
+        protected override void Initialize() {
+            ConfigureFixedBackBuffer();
+            graphics.ApplyChanges();
+            Window.AllowUserResizing = false;
+            Window.ClientSizeChanged += Window_ClientSizeChanged;
             base.Initialize();
-
         }
 
-        protected override void LoadContent()
-        {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
-            pixelTexture.SetData(new[] { Color.White });
-
-            playerRect = new Rectangle(100, 100, PlayerSize, PlayerSize);
+        protected override void LoadContent() { 
+            base.LoadContent();
         }
 
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
+        protected override void UnloadContent() { 
+            base.UnloadContent();
         }
 
-        protected override void Update(GameTime gameTime)
-        {
-            KeyboardState keyboardState = Keyboard.GetState();
-
-            // GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
-            // if (keyboardState.IsKeyDown(Keys.Escape) ||
-            //     keyboardState.IsKeyDown(Keys.Back) ||
-            //     gamePadState.Buttons.Back == ButtonState.Pressed)
-            // {
-            //     try { Exit(); }
-            //     catch (PlatformNotSupportedException) { /* ignore */ }
-            // }
-
-            Vector2 movement = Vector2.Zero;
-            if (keyboardState.IsKeyDown(Keys.Left)) movement.X -= 1f;
-            if (keyboardState.IsKeyDown(Keys.Right)) movement.X += 1f;
-            if (keyboardState.IsKeyDown(Keys.Up)) movement.Y -= 1f;
-            if (keyboardState.IsKeyDown(Keys.Down)) movement.Y += 1f;
-
-            if (movement != Vector2.Zero)
-            {
-                movement.Normalize();
-                float deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                playerRect.X = (int)MathHelper.Clamp(playerRect.X + movement.X * PlayerSpeed * deltaSeconds, 0, GraphicsDevice.PresentationParameters.BackBufferWidth - playerRect.Width);
-                playerRect.Y = (int)MathHelper.Clamp(playerRect.Y + movement.Y * PlayerSpeed * deltaSeconds, 0, GraphicsDevice.PresentationParameters.BackBufferHeight - playerRect.Height);
+        protected override void Update(GameTime gameTime) {
+            if (GraphicsDevice.PresentationParameters.BackBufferWidth != FixedWidth ||
+                GraphicsDevice.PresentationParameters.BackBufferHeight != FixedHeight ||
+                Window.ClientBounds.Width != FixedWidth ||
+                Window.ClientBounds.Height != FixedHeight) {
+                ApplyFixedSize();
             }
 
             base.Update(gameTime);
@@ -89,6 +55,34 @@ namespace GameJam2026
             // The real drawing happens inside the screen manager component, which gets called
             // because it's a component. Neat.
             base.Draw(gameTime);
+        }
+
+        private void Window_ClientSizeChanged(object sender, EventArgs e) {
+            ApplyFixedSize();
+        }
+
+        private void ConfigureFixedBackBuffer() {
+            graphics.PreferredBackBufferWidth = FixedWidth;
+            graphics.PreferredBackBufferHeight = FixedHeight;
+            graphics.IsFullScreen = false;
+        }
+
+        private void ApplyFixedSize() {
+            if (resizing) {
+                return;
+            }
+
+            resizing = true;
+            try {
+                ConfigureFixedBackBuffer();
+                graphics.ApplyChanges();
+
+                MethodInfo changeClientSize = Window.GetType().GetMethod("ChangeClientSize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                changeClientSize?.Invoke(Window, new object[] { FixedWidth, FixedHeight });
+            }
+            finally {
+                resizing = false;
+            }
         }
     }
 }

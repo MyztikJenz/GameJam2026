@@ -83,11 +83,50 @@
         {
             window.theInstance = instance;
 
-            // set initial canvas size
+            const gameWidth = 1465;
+            const gameHeight = 768;
+
+            function setFixedCanvasSize() {
+                var canvas = document.getElementById('theCanvas');
+                var holder = document.getElementById('canvasHolder');
+
+                var width = gameWidth + 'px';
+                var height = gameHeight + 'px';
+
+                if (holder.style.width !== width) {
+                    holder.style.width = width;
+                }
+                if (holder.style.height !== height) {
+                    holder.style.height = height;
+                }
+                if (canvas.width !== gameWidth) {
+                    canvas.width = gameWidth;
+                }
+                if (canvas.height !== gameHeight) {
+                    canvas.height = gameHeight;
+                }
+                if (canvas.style.width !== width) {
+                    canvas.style.width = width;
+                }
+                if (canvas.style.height !== height) {
+                    canvas.style.height = height;
+                }
+            }
+
+            setFixedCanvasSize();
+            window.addEventListener('resize', () => {
+                setFixedCanvasSize();
+                window.requestAnimationFrame(setFixedCanvasSize);
+                window.setTimeout(setFixedCanvasSize, 0);
+                window.setTimeout(setFixedCanvasSize, 100);
+            });
+
+            new MutationObserver(setFixedCanvasSize).observe(document.getElementById('theCanvas'), {
+                attributes: true,
+                attributeFilter: ['width', 'height', 'style']
+            });
+
             var canvas = document.getElementById('theCanvas');
-            var holder = document.getElementById('canvasHolder');
-            canvas.width = holder.clientWidth;
-            canvas.height = holder.clientHeight;
             // disable context menu on right click
             canvas.addEventListener("contextmenu", e => e.preventDefault());
 
