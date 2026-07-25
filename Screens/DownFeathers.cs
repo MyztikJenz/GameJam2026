@@ -10,6 +10,8 @@ namespace GameJam2026 {
         Vector2 playerPosition;
         Texture2D goose;
         Texture2D background;
+        Texture2D sun;
+        Texture2D[] clouds = new Texture2D[2];
         TitleString titleString;
         int score;
 
@@ -27,6 +29,9 @@ namespace GameJam2026 {
 
         public override void Load() {
             goose = screenManager.contentMgr.Load<Texture2D>("goose");
+            sun = screenManager.contentMgr.Load<Texture2D>("sun");
+            clouds[0] = screenManager.contentMgr.Load<Texture2D>("cloud1");
+            clouds[1] = screenManager.contentMgr.Load<Texture2D>("cloud2");
             playerPosition = new Vector2(viewport.Bounds.Width / 2, viewport.Bounds.Height - 5 - goose.Height);
 
             sourceFeathers = Feather.CreateFeathers(screenManager.contentMgr, viewport.Bounds.Width);
@@ -126,6 +131,9 @@ namespace GameJam2026 {
             SpriteBatch sb = screenManager.spriteBatch;
             sb.Begin();
             sb.Draw(background, Vector2.Zero, Color.White);
+            sb.Draw(sun, Vector2.Zero, Color.White);
+            sb.Draw(clouds[0], new Vector2(viewport.Bounds.Right - clouds[0].Width - 100, 100), Color.White);
+            sb.Draw(clouds[1], new Vector2(viewport.Bounds.Right - clouds[1].Width - 300, 190), Color.White);
             sb.Draw(goose, playerPosition, Color.White);
 
             foreach (Feather f in displayedFeathers) {

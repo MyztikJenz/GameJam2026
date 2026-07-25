@@ -195,6 +195,7 @@ namespace GameJam2026 {
             gamesToPlay.Clear();
 
             // TODO: This will need to be smarter once we get more games finished
+            gamesToPlay.Add(longWayDownScreen);
             gamesToPlay.Add(wordCountScreen);
             gamesToPlay.Add(downFeathersScreen);
             gamesToPlay.Add(countTakedownScreen);

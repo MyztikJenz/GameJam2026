@@ -100,6 +100,7 @@ namespace GameJam2026 {
         }
 
         public override void Draw(GameTime gameTime) {
+            screenManager.GraphicsDevice.Viewport = viewport;
             screenManager.GraphicsDevice.Clear(new Color(39, 76, 67));
 
             SpriteBatch sb = screenManager.spriteBatch;
