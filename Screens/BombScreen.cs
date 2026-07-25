@@ -2,9 +2,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GameJam2026 {
-    class BombScreen : GameScreen {
+    class BombScreen : GameScreen, IBombScreenService {
 
         Texture2D bomb;
+        int gamesCompleted;
+        IDefusalInstructionsService defusalService;
 
         public BombScreen(ScreenManager mgr) : base(mgr) { 
             PresentationParameters pp = screenManager.GraphicsDevice.PresentationParameters;
@@ -13,8 +15,15 @@ namespace GameJam2026 {
 
         }
 
+        public override void Initialize() {
+            screenManager.Game.Services.AddService(typeof(IBombScreenService), this);
+
+            base.Initialize();
+        }
+
         public override void Load() {
             bomb = screenManager.contentMgr.Load<Texture2D>("bomb");
+            defusalService = screenManager.Game.Services.GetService(typeof(IDefusalInstructionsService)) as IDefusalInstructionsService;
         }
 
         public override void Draw(GameTime gameTime)
@@ -29,7 +38,20 @@ namespace GameJam2026 {
             mgr.spriteBatch.Draw(bomb, Point.Zero.ToVector2(), Color.White);
             mgr.spriteBatch.End();
 
+            Utilities.DebugString(mgr, gamesCompleted.ToString(), Vector2.One);
             base.Draw(gameTime);
         }
+
+        //
+        // IBombScreenService
+        //
+        public void GameCompleted() {
+            gamesCompleted += 1;
+            defusalService.RevealDoor(gamesCompleted);
+        }
+    }
+
+    public interface IBombScreenService {
+        void GameCompleted();
     }
 }

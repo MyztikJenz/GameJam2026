@@ -19,6 +19,7 @@ namespace GameJam2026 {
 
         }
 
+        public virtual void Initialize() { }
         public virtual void Deactivate() { }
         public virtual void Load() { }
         public virtual void Unload() { }

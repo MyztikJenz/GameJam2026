@@ -41,6 +41,8 @@ namespace GameJam2026 {
 
         GameScreen currentGameScreen;
 
+        IBombScreenService bombService;
+
         public SoundEffect buzzer;
 
         public ScreenManager(Game game) : base(game) {
@@ -81,6 +83,12 @@ namespace GameJam2026 {
             screens.Add(hangmanScreen);
             screens.Add(longWayDownScreen);
             screens.Add(wordCountScreen);
+
+            foreach (GameScreen screen in screens) {
+                screen.Initialize();
+            }
+
+            bombService = Game.Services.GetService(typeof(IBombScreenService)) as IBombScreenService;
 
             buzzer = contentMgr.Load<SoundEffect>("sounds/yusuf_sfx-wrong-buzzer-double-491796");
 
@@ -154,7 +162,7 @@ namespace GameJam2026 {
                 GraphicsDevice.Viewport = viewport;
             }
 
-            Utilities.DebugString(this, viewport.Bounds.ToString(), Vector2.One);
+            // Utilities.DebugString(this, viewport.Bounds.ToString(), Vector2.One);
         }
 
         // Called when a game has completed. Time to move on.
@@ -179,6 +187,7 @@ namespace GameJam2026 {
                 startAndEndScreen.isEndScreen = true;
             }
             else {
+                bombService.GameCompleted();
                 currentGameScreen.isActive = false;
                 currentGameScreen = GetNextGame();
                 currentGameScreen.isActive = true;
