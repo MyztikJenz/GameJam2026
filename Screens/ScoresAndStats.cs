@@ -59,6 +59,9 @@ namespace GameJam2026 {
 
             yOffset += slide;
             foreach(GameDetail game in GameDetails.games) {
+                if (game.id == GameDetails.DefuseTheBombScreenID) {
+                    continue;
+                }
                 _drawScoreLayout(sb, game.icon, font, game.currentTime == 0 ? "--.--" : game.currentTime.ToString("00.00"), 
                                                       game.bestTime == 0 ? "--.--" : game.bestTime.ToString("00.00"), yOffset);
                 yOffset += slide;
