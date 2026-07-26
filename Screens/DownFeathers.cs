@@ -147,6 +147,18 @@ namespace GameJam2026 {
 
             base.Draw(gameTime);
         }
+
+        public override void Reset() {
+            titleString.Reset();
+
+            sourceFeathers = Feather.CreateFeathers(screenManager.contentMgr, viewport.Bounds.Width);
+            for (int x=0; x<7; x++) {
+                Feather f = sourceFeathers[Random.Shared.Next(sourceFeathers.Count)];
+                displayedFeathers.Add(new Feather(f));
+            }
+            playerPosition = new Vector2(viewport.Bounds.Width / 2, viewport.Bounds.Height - 5 - goose.Height);
+
+        }
     }
 }
 

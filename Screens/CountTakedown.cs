@@ -189,5 +189,13 @@ namespace GameJam2026 {
                 pewPewInstance.Play();
             }
         }
+
+        public override void Reset() {
+            playerPosition = new Vector2(viewport.Bounds.Width / 2, viewport.Bounds.Height - 5 - ship.Height);
+            titleString.Reset();
+            bullets.Clear();
+
+            base.Reset();
+        }
     }
 }

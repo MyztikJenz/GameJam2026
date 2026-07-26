@@ -24,6 +24,7 @@ namespace GameJam2026 {
         public virtual void Deactivate() { }
         public virtual void Load() { }
         public virtual void Unload() { }
+        public virtual void Reset() { } // When we "play again" set up everything as new
 
         public virtual void Update(GameTime gameTime) { }
 

@@ -56,10 +56,22 @@ namespace GameJam2026 {
             grass = screenManager.contentMgr.Load<Texture2D>("grass");
             background = Utilities.CreateLinearGradient(screenManager.GraphicsDevice, viewport.Bounds.Width, viewport.Bounds.Height, Color.DarkSlateBlue, Color.LightSteelBlue);
             titleString = new TitleString("Long Way Down!", Color.Yellow, Color.Gray);
-            playerPosition = new Vector2(viewport.Bounds.Width / 2, 25);
             blinkRect = new Rectangle(viewport.Bounds.Right - 250, viewport.Bounds.Bottom - 40, 100, 10);
 
+            Reset();
+
             base.Load();
+        }
+
+        public override void Reset() {
+            playerPosition = new Vector2(viewport.Bounds.Width / 2, 25);
+            displayQuestion = false;
+            titleString.Reset();
+            equation.Clear();
+            activeCrates = null;
+            nextCrateType = Crates.numeric;
+
+            base.Reset();
         }
 
         public override void Update(GameTime gameTime) {
@@ -98,7 +110,8 @@ namespace GameJam2026 {
                             displayQuestion = true;
                             var moveTo = new Vector2(90, viewport.Bounds.Height - dude.Height - (dude.Height - dudeLanded.Height));
                             playerTracker = new SimpleTracker(dude, playerPosition, moveTo);
-                            playerTracker.SetSpeed(250);
+                            playerTracker.ySpeed = 250;
+                            playerTracker.xSpeed = 450;
 
                             moveTo = new Vector2(0, viewport.Bounds.Bottom - grass.Height);
                             grassTracker = new SimpleTracker(grass, new Vector2(0, viewport.Bounds.Bottom + grass.Height), moveTo);

@@ -38,6 +38,11 @@ namespace GameJam2026 {
 
         }
 
+        public void Reset() {
+            timer = 0f;
+            opacity = 1f;
+        }
+
     }
 
 }

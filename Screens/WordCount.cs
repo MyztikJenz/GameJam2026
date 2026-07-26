@@ -186,5 +186,14 @@ namespace GameJam2026 {
                     break;
             }
         }
+
+        public override void Reset() {
+            gameWords.Clear();
+            titleString.Reset();
+            typedAnswerTimer = 0f;
+            typedAnswer = 999;
+
+            base.Reset();
+        }
     }
 }

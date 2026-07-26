@@ -12,13 +12,29 @@ namespace GameJam2026 {
             _updateBackground = true;
         } }
         Texture2D background;
-        string debugString = "";
+        // string debugString = "";
         Button playButton;
+        Button playAgainButton;
+        Button toggleBackgroundMusicButton;
+        internal bool bombWasDefused;
 
         public StartAndEndScreen(ScreenManager manager) : base(manager) { 
+            viewport = screenManager.GraphicsDevice.Viewport;
+        }
+
+        public override void Load() {
             playButton = new Button("Play");
-            playButton.Position = Vector2.One;
             playButton.Tapped += playButton_Tapped;
+
+            playAgainButton = new Button("Play Again?");
+            playAgainButton.Tapped += playAgainButton_Tapped;
+
+            toggleBackgroundMusicButton = new Button("Toggle Music");
+            toggleBackgroundMusicButton.Size = new Vector2(200, 50);
+            toggleBackgroundMusicButton.Tapped += toggleMusic_Tapped;
+            toggleBackgroundMusicButton.Position = new Vector2(viewport.Bounds.Right - toggleBackgroundMusicButton.Size.X - 10, viewport.Bounds.Bottom - 60);
+            toggleBackgroundMusicButton.BorderColor = Color.Purple;
+
         }
 
         public override void Update(GameTime gameTime) {
@@ -44,42 +60,80 @@ namespace GameJam2026 {
 
             if (input.isNewLeftMouseDown()) {
                 playButton.HandleTap(input.mousePosition().ToVector2());
+                playAgainButton.HandleTap(input.mousePosition().ToVector2());
+                toggleBackgroundMusicButton.HandleTap(input.mousePosition().ToVector2());
             }
        }
 
         public override void Draw(GameTime gameTime) {
             SpriteBatch sb = screenManager.spriteBatch;
-            Viewport viewport = screenManager.GraphicsDevice.Viewport;
+            SpriteFont font = screenManager.font;
 
             sb.Begin();
             sb.Draw(background, Vector2.Zero, Color.White);
             sb.End();
 
             if (isEndScreen) {
-                Vector2 strLoc = new Vector2(viewport.Width / 2, viewport.Height / 2 - 50);
-                Utilities.DrawString(screenManager, "Ha Ha YoU sUcK!", strLoc);
+                sb.Begin(samplerState: SamplerState.PointClamp);
+                if (bombWasDefused) {
+                    string text = "Very wow! Much good!";
+                    Vector2 textSize = font.MeasureString(text);
+                    sb.DrawString(font, text, new Vector2(viewport.Width / 2 - textSize.X / 2, 100), Color.Navy);
+
+                    text = "Try to go faster next time!";
+                    textSize = font.MeasureString(text);
+                    sb.DrawString(font, text, new Vector2(viewport.Width / 2 - textSize.X / 2, 140), Color.Navy);
+                }
+                else {
+                    string text = "Oh... well, um...";
+                    Vector2 textSize = font.MeasureString(text);
+                    sb.DrawString(font, text, new Vector2(viewport.Width / 2 - textSize.X / 2, 100), Color.Navy);
+
+                    text = "We hope you had fun! Try again!";
+                    textSize = font.MeasureString(text);
+                    sb.DrawString(font, text, new Vector2(viewport.Width / 2 - textSize.X / 2, 140), Color.Navy);
+                }
+                playAgainButton.Position = new Vector2(viewport.Width / 2 - playButton.Size.X / 2, 200);;
+                playAgainButton.Draw(this);
+
+                sb.End();
             }
             else {
                 // Start screen
+                sb.Begin(samplerState: SamplerState.PointClamp);
+                string text = "Not Another Bomb Game";
+                Vector2 textSize = font.MeasureString(text);
+                sb.DrawString(font, text, new Vector2(viewport.Width / 2 - textSize.X / 2, 10), Color.Navy);
+                
+                text = "A game by MsWonderMom and MyztikJenz";
+                textSize = font.MeasureString(text);
+                sb.DrawString(font, text, new Vector2(viewport.Width / 2 - textSize.X / 2, 40), Color.Navy);
 
-                Vector2 strLoc = new Vector2(viewport.Width / 2, viewport.Height / 2 - 50);
-                Utilities.DrawString(screenManager, "ShAlL wE pLaY a GaMe?", strLoc);
 
-                strLoc.Y += 20;
-                // Utilities.DrawString(screenManager, "Play", strLoc);
-                sb.Begin();
-                playButton.Position = strLoc;
+                playButton.Position = new Vector2(viewport.Width / 2 - playButton.Size.X / 2, 100);
                 playButton.Draw(this);
                 sb.End();
             }
 
-            Utilities.DebugString(screenManager, debugString, new Vector2(10, 10));
+            sb.Begin();
+            toggleBackgroundMusicButton.Draw(this);
+            sb.End();
+
+            // Utilities.DebugString(screenManager, debugString, new Vector2(10, 10));
         }
 
         void playButton_Tapped(object sender, EventArgs e) {
-            debugString = "tapped";
+            screenManager.ToggleBackgroundMusic();
+            screenManager.ToggleBackgroundMusic();
             screenManager.GameHasFinished(this);
         }
 
+        void playAgainButton_Tapped(object sender, EventArgs e) {
+            screenManager.GameHasFinished(this);
+        }
+
+        void toggleMusic_Tapped(object sender, EventArgs e) {
+            screenManager.ToggleBackgroundMusic();
+        }
     }
 }

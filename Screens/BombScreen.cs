@@ -11,23 +11,20 @@ namespace GameJam2026 {
         Texture2D blue_broken;
         Texture2D blue;
         Texture2D bomb;
-        Texture2D dont_press;
         Texture2D green_broken;
         Texture2D green;
         Texture2D orange_broken;
         Texture2D orange;
-        Texture2D press;
         Texture2D red_broken;
         Texture2D red;
         Texture2D slider_knob;
-        Texture2D stoplight_green;
-        Texture2D stoplight_off;
-        Texture2D stoplight_red;
-        Texture2D stoplight_yellow;
         Texture2D toggle_switch;
         Texture2D twist_knob;
         Texture2D yellow_broken;
         Texture2D yellow;
+
+        Texture2D[] stoplightTexs = new Texture2D[4];
+        Texture2D[] pressTexs = new Texture2D[2];
 
         int gamesCompleted;
         bool gameIsActive;
@@ -50,6 +47,18 @@ namespace GameJam2026 {
 
         Vector2 toggleSwitchPivotPoint = new Vector2(19, 19);
 
+        SoundEffect beepSfx;
+        SoundEffect crankSfx;
+        SoundEffect clickSfx;
+        SoundEffect glassBreakSfx;
+        SoundEffectInstance glassBreakSfxInstance;
+        SoundEffect explosionSfx;
+        SoundEffect clappingSfx;
+
+        BombScenario defuseScenario;
+
+        Button debugButton;
+
         private enum FuseColor {
             Red,
             Green,
@@ -59,7 +68,7 @@ namespace GameJam2026 {
             Last
         }
 
-        private enum SliderKnob {
+        internal enum SliderKnob {
             Up,
             Down,
             Last
@@ -89,7 +98,18 @@ namespace GameJam2026 {
             DontPress
         }
 
+        internal enum StoplightTextures {
+            Off,
+            Red,
+            Yellow,
+            Green,
+            Last
+        }
 
+        internal enum PressTextures {
+            Press,
+            DontPress
+        }
 
         public BombScreen(ScreenManager mgr) : base(mgr) { 
             PresentationParameters pp = screenManager.GraphicsDevice.PresentationParameters;
@@ -109,23 +129,26 @@ namespace GameJam2026 {
             blue_broken = screenManager.contentMgr.Load<Texture2D>("bomb/blue_broken");
             blue = screenManager.contentMgr.Load<Texture2D>("bomb/blue");
             bomb = screenManager.contentMgr.Load<Texture2D>("bomb/bomb");
-            dont_press = screenManager.contentMgr.Load<Texture2D>("bomb/dont_press");
             green_broken = screenManager.contentMgr.Load<Texture2D>("bomb/green_broken");
             green = screenManager.contentMgr.Load<Texture2D>("bomb/green");
             orange_broken = screenManager.contentMgr.Load<Texture2D>("bomb/orange_broken");
             orange = screenManager.contentMgr.Load<Texture2D>("bomb/orange");
-            press = screenManager.contentMgr.Load<Texture2D>("bomb/press");
             red_broken = screenManager.contentMgr.Load<Texture2D>("bomb/red_broken");
             red = screenManager.contentMgr.Load<Texture2D>("bomb/red");
             slider_knob = screenManager.contentMgr.Load<Texture2D>("bomb/slider_knob");
-            stoplight_green = screenManager.contentMgr.Load<Texture2D>("bomb/stoplight_green");
-            stoplight_off = screenManager.contentMgr.Load<Texture2D>("bomb/stoplight_off");
-            stoplight_red = screenManager.contentMgr.Load<Texture2D>("bomb/stoplight_red");
-            stoplight_yellow = screenManager.contentMgr.Load<Texture2D>("bomb/stoplight_yellow");
             toggle_switch = screenManager.contentMgr.Load<Texture2D>("bomb/toggle_switch");
             twist_knob = screenManager.contentMgr.Load<Texture2D>("bomb/twist_knob");
             yellow_broken = screenManager.contentMgr.Load<Texture2D>("bomb/yellow_broken");
             yellow = screenManager.contentMgr.Load<Texture2D>("bomb/yellow");
+
+            stoplightTexs[(int)StoplightTextures.Off] = screenManager.contentMgr.Load<Texture2D>("bomb/stoplight_off");
+            stoplightTexs[(int)StoplightTextures.Red] = screenManager.contentMgr.Load<Texture2D>("bomb/stoplight_red");
+            stoplightTexs[(int)StoplightTextures.Yellow] = screenManager.contentMgr.Load<Texture2D>("bomb/stoplight_yellow");
+            stoplightTexs[(int)StoplightTextures.Green] = screenManager.contentMgr.Load<Texture2D>("bomb/stoplight_green");
+
+            pressTexs[(int)PressTextures.Press] = screenManager.contentMgr.Load<Texture2D>("bomb/press");
+            pressTexs[(int)PressTextures.DontPress] = screenManager.contentMgr.Load<Texture2D>("bomb/dont_press");
+
 
             tickingClock = screenManager.contentMgr.Load<SoundEffect>("sounds/dragon-studio-clock-ticking-sfx-467486-edited");
             tickingClockInstance = tickingClock.CreateInstance();
@@ -154,7 +177,7 @@ namespace GameJam2026 {
             twistKnob = new Rectangle(20, 22, 75, 63);
 
             sliderKnob[(int)SliderKnob.Up]   = new Rectangle(329, 27, 38, 30);
-            sliderKnob[(int)SliderKnob.Down] = new Rectangle(329, 213, 38, 30);
+            sliderKnob[(int)SliderKnob.Down] = new Rectangle(329, 160, 38, 30);
 
             switches[(int)Switches.One]   = new Rectangle(131, 110, 38, 38);
             switches[(int)Switches.Two]   = new Rectangle(169, 110, 38, 38);
@@ -205,7 +228,18 @@ namespace GameJam2026 {
             dontPress.Tapped += OtherButton_Tapped;
             allClickableThings.Add(dontPress);
 
+            beepSfx = screenManager.contentMgr.Load<SoundEffect>("sounds/freesound_community-beep-beep-43875-edited");
+            crankSfx = screenManager.contentMgr.Load<SoundEffect>("sounds/freesound_community-wind-up-toy-107907-edited");
+            clickSfx = screenManager.contentMgr.Load<SoundEffect>("sounds/homemade_sfx-light-switch-flip-272436-edited");
+            glassBreakSfx = screenManager.contentMgr.Load<SoundEffect>("sounds/dragon-studio-glass-breaking-386153-edited");
+            glassBreakSfxInstance = glassBreakSfx.CreateInstance();
+            explosionSfx = screenManager.contentMgr.Load<SoundEffect>("sounds/freesound_community-explosion-5981");
+            clappingSfx = screenManager.contentMgr.Load<SoundEffect>("sounds/freesound_community-clapping-6474-edited");
 
+            debugButton = new Button("debug");
+            debugButton.Size = new Vector2(50, 30);
+            debugButton.Position = new Vector2(200, 10);
+            debugButton.Tapped += Debug_Tapped;
         }
 
         public override void HandleInput(GameTime gameTime, InputState input) {
@@ -213,8 +247,12 @@ namespace GameJam2026 {
 
             if (input.isNewLeftMouseDown()) {
                 foreach (Button b in allClickableThings) {
-                    b.HandleTap(input.translatedMousePosition(viewport).ToVector2());
+                    if (b.HandleTap(input.translatedMousePosition(viewport).ToVector2())) {
+                        break;
+                    }
                 }
+
+                debugButton.HandleTap(input.translatedMousePosition(viewport).ToVector2());
             }
        }
 
@@ -233,12 +271,73 @@ namespace GameJam2026 {
 
 
                 if (bombClock <= 0.00001f) {
-                    gameIsActive = false;
-                    tickingClockInstance.Stop();
-                    screenManager.BombExploded();
+                    bombClock = 0f;
+                    DetonateBomb();
                 }
+
+                if (twistKnobDegrees > 0) {
+                    twistKnobDegrees += 5;
+                    if (twistKnobDegrees > 360) {
+                        twistKnobDegrees = 0;    
+                    }
+                }
+
+                // This will end the game if the bomb is either in a detonate state or is successfully defused.
+                CheckBombState();
             }
             base.Update(gameTime);
+        }
+
+        // Should we go boom?
+        public void CheckBombState() {
+            // if (bombClock > 999f) { return; } // we're debugging
+            // Check for things that can cause an immediate boom
+            if (twistKnobTurned > defuseScenario.twistKnobTurned) { 
+                DetonateBomb(); 
+            }
+            for (int x=0; x<(int)FuseColor.Last; x++) {
+                if (fusesBroken[x] && defuseScenario.fusesBroken[x] == false) {
+                    DetonateBomb();
+                }
+            }
+            if (keypadString.Length > defuseScenario.keypadString.Length) {
+                DetonateBomb();
+            }
+            if (defuseScenario.keypadString.StartsWith(keypadString) == false) {
+                DetonateBomb();
+            }
+
+            // Now check to see if the bomb has been defused
+            if (stoplightTextureIdx != defuseScenario.stoplightTextureIdx) { return; }
+            if (twistKnobTurned < defuseScenario.twistKnobTurned) { return; }
+            for (int x=0; x<(int)FuseColor.Last; x++) {
+                if (fusesBroken[x] != defuseScenario.fusesBroken[x]) {
+                    return;
+                }
+            }
+            for (int x=0; x<(int)Switches.Last; x++) {
+                if (switchesFlipped[x] != defuseScenario.switchesFlipped[x]) {
+                    return;
+                }
+            }
+            if (pressTexture != defuseScenario.pressTexture) { return; }
+            if (sliderPosition != defuseScenario.sliderPosition) { return; }
+
+            // If we're here, the bomb was successfully defused!
+            BombDefused();
+        }
+        private void BombDefused() {
+            clappingSfx.Play();
+            gameIsActive = false;
+            tickingClockInstance.Stop();
+            screenManager.BombDefused();
+        }
+
+        private void DetonateBomb() {
+            explosionSfx.Play();
+            gameIsActive = false;
+            tickingClockInstance.Stop();
+            screenManager.BombExploded();
         }
 
         public override void Draw(GameTime gameTime) {
@@ -267,7 +366,6 @@ namespace GameJam2026 {
 
             // Draw the keypad screen
             var keypadRect = displays[(int)Displays.Keypad];
-            string keypadString = "9941";
             stringSize = screenManager.cursedTimer12ptFont.MeasureString(keypadString);
             smallYAxisFontAdjustment = 3;
             sb.Draw(screenManager.blankTexture, keypadRect, Color.Black);
@@ -275,13 +373,17 @@ namespace GameJam2026 {
             sb.DrawString(screenManager.cursedTimer12ptFont, keypadString, 
                             new Vector2(keypadRect.Left + keypadRect.Width / 2 - stringSize.X / 2, 
                                         keypadRect.Top + keypadRect.Height / 2 - stringSize.Y / 2 + smallYAxisFontAdjustment), 
-                            textColor);
+                            keypadTextColor);
 
             // Now the bomb. Everything else is on top
             sb.Draw(bomb, Point.Zero.ToVector2(), Color.White);
 
             // Draw the twist knob
-            sb.Draw(twist_knob, twistKnob, Color.White);
+            Vector2 twistKnobPivot = new Vector2(twist_knob.Width / 2f, twist_knob.Height / 2f);
+            sb.Draw(twist_knob, twistKnob.Center.ToVector2(), null, Color.White, MathHelper.ToRadians(twistKnobDegrees), twistKnobPivot, 1f, SpriteEffects.None, 1f);
+            if (twistOverlay > 0) {
+                sb.DrawString(screenManager.font, twistOverlay.ToString(), new Vector2(twistKnob.Right - 10, twistKnob.Bottom - 20), Color.Navy);
+            }
 
             // Draw fuses
             for (int x=0; x<(int)FuseColor.Last; x++) {
@@ -290,18 +392,21 @@ namespace GameJam2026 {
             }
 
             // Draw Stoplights
-            sb.Draw(stoplight_off, stoplights[(int)Stoplight.Lights], Color.White);
+            sb.Draw(textureForStoplight(), stoplights[(int)Stoplight.Lights], Color.White);
 
             // Draw Don't Press button
-            sb.Draw(dont_press, dontPressButton, Color.White);
+            sb.Draw(textureForDontPress(), dontPressButton, Color.White);
 
             // Draw slider knob
-            sb.Draw(slider_knob, sliderKnob[(int)SliderKnob.Up], Color.White);
+            sb.Draw(slider_knob, sliderKnob[(int)sliderPosition], Color.White);
 
             // Draw switches
             for (int x=0; x<(int)Switches.Last; x++) {
-                sb.Draw(toggle_switch, switches[x], Color.White);
+                var effect = switchesFlipped[x] ? SpriteEffects.FlipVertically : SpriteEffects.None;
+                sb.Draw(toggle_switch, switches[x], null, Color.White, 0f, Vector2.Zero, effect, 0f);
             }
+
+            // debugButton.Draw(this);
 
             sb.End();
 
@@ -311,24 +416,54 @@ namespace GameJam2026 {
             base.Draw(gameTime);
         }
 
+        string keypadString = "";
         void Keypad_Tapped(object sender, EventArgs e) {
-            debugString = $"{(sender as Button).intValue} tapped";
+            keypadString += (sender as Button).intValue;
+            beepSfx.Play();
         }
 
+        bool[] fusesBroken = [false, false, false, false, false];
         void Fuse_Tapped(object sender, EventArgs e) {
-            debugString = $"fuse {(sender as Button).intValue} tapped";
+            FuseColor fc = (FuseColor)(sender as Button).intValue;
+            fusesBroken[(int)fc] = true;
+            glassBreakSfxInstance.Play();
         }
 
+        SliderKnob sliderPosition = SliderKnob.Up;
         void Slider_Tapped(object sender, EventArgs e) {
-            debugString = $"slider {(sender as Button).intValue} tapped";
+            sliderPosition = (sliderPosition == SliderKnob.Up) ? SliderKnob.Down : SliderKnob.Up;
+            clickSfx.Play();
         }
 
+        internal bool[] switchesFlipped = [false, false, false, false];
         void Switch_Tapped(object sender, EventArgs e) {
-            debugString = $"switch {(sender as Button).intValue} tapped";
+            Switches sw = (Switches)(sender as Button).intValue;
+            switchesFlipped[(int)sw] = !switchesFlipped[(int)sw];
+            clickSfx.Play();
         }
 
+        internal int twistKnobTurned = 0;
+        internal float twistKnobDegrees = 0f;
         void OtherButton_Tapped(object sender, EventArgs e) {
-            debugString = $"other {(sender as Button).intValue} tapped";
+            OtherButtons ob = (OtherButtons)(sender as Button).intValue;
+
+            switch (ob) {
+                case OtherButtons.DontPress:
+                    pressTexture = (pressTexture + 1) % 2;
+                    clickSfx.Play();
+                    break;
+                case OtherButtons.Stoplight:
+                    beepSfx.Play();
+                    stoplightTextureIdx = (stoplightTextureIdx + 1) % (int)StoplightTextures.Last;
+                    break;
+                case OtherButtons.TwistKnob:
+                    if (twistKnobDegrees == 0) {
+                        twistKnobTurned += 1;
+                        twistKnobDegrees = 1;
+                        crankSfx.Play();
+                    }
+                    break;
+            }
         }
 
         private (Texture2D t, Rectangle r) drawForFuse(FuseColor c) {
@@ -337,19 +472,19 @@ namespace GameJam2026 {
 
             switch (c) {
                 case FuseColor.Red:
-                    texture = red;
+                    texture = fusesBroken[(int)c] ? red_broken : red;
                     break;
                 case FuseColor.Green:
-                    texture = green;
+                    texture = fusesBroken[(int)c] ? green_broken : green;
                     break;
                 case FuseColor.Blue:
-                    texture = blue;
+                    texture = fusesBroken[(int)c] ? blue_broken : blue;
                     break;
                 case FuseColor.Yellow:
-                    texture = yellow;
+                    texture = fusesBroken[(int)c] ? yellow_broken : yellow;
                     break;
                 case FuseColor.Orange:
-                    texture = orange;
+                    texture = fusesBroken[(int)c] ? orange_broken : orange;
                     break;
                 default:
                     texture = red;
@@ -357,6 +492,55 @@ namespace GameJam2026 {
             }
             return (texture, rectangle);
         }
+
+        internal int stoplightTextureIdx = 0;
+        private Texture2D textureForStoplight() {
+            return stoplightTexs[stoplightTextureIdx];
+        }
+
+        internal int pressTexture = 0;
+        private Texture2D textureForDontPress() {
+            return pressTexs[pressTexture];
+        }
+
+        public override void Reset() {
+        }
+
+        int bombIdx = 1;
+        int twistOverlay = 0;
+        internal void Debug_Tapped(object sender, EventArgs e) {
+            bombClock = 99999f;
+            var s = BombScenario.ScenarioWithID(5);
+            // defusalService.SetDefuseScenario(s);
+
+            debugString = $"setup for {s.id}";
+            bombIdx += 1;
+
+            stoplightTextureIdx = s.stoplightTextureIdx;
+            for (int x=0; x<(int)FuseColor.Last; x++) {
+                fusesBroken[x] = s.fusesBroken[x];
+            }
+            for (int x=0; x<(int)Switches.Last; x++) {
+                switchesFlipped[x] = s.switchesFlipped[x];
+            }
+            pressTexture = s.pressTexture;
+            sliderPosition = s.sliderPosition;
+            keypadString = s.keypadString;
+
+            twistOverlay = s.twistKnobTurned;
+        }
+
+        public void ConfigureBomb(BombScenario setup) {
+            stoplightTextureIdx = setup.stoplightTextureIdx;
+            twistKnobTurned = setup.twistKnobTurned;
+            twistKnobDegrees = 0;
+            fusesBroken = setup.fusesBroken;
+            switchesFlipped = setup.switchesFlipped;
+            pressTexture = setup.pressTexture;
+            sliderPosition = setup.sliderPosition;
+            keypadString = setup.keypadString;
+        }
+
 
         //
         // IBombScreenService
@@ -367,6 +551,10 @@ namespace GameJam2026 {
         }
 
         public void GameStarted() {
+            defuseScenario = BombScenario.ChooseRandomScenario();
+            var setupScenario = BombScenario.CreateSetupScenario();
+            ConfigureBomb(setupScenario);
+            defusalService.SetDefuseScenario(defuseScenario, setupScenario);
             gameIsActive = true;
             bombClock = startingBombClockTime;
             tickingClockInstance.Play();
@@ -387,4 +575,144 @@ namespace GameJam2026 {
         float CurrentBombClock();
         float StartingBombClockTime();
     }
+
+    // What blows you up immediately:
+    //      too many turns of the twist knob
+    //      breaking a fuse you shouldn't have
+    //      typing a passkey that is
+    //          too long
+    //          not correct
+    public class BombScenario() {
+        internal int id = 0;
+        internal int stoplightTextureIdx = 0;
+        internal int twistKnobTurned = 0;
+        internal bool[] fusesBroken = [false, false, false, false, false];
+        internal bool[] switchesFlipped = [false, false, false, false];
+        internal int pressTexture = (int)BombScreen.PressTextures.DontPress;
+        internal BombScreen.SliderKnob sliderPosition = BombScreen.SliderKnob.Up;
+        internal string keypadString = "";
+
+        internal static BombScenario ChooseRandomScenario() {
+            int numScenarios = 6;
+            return BombScenario.ScenarioWithID(Random.Shared.Next(1,numScenarios+1));
+        }
+
+        internal static BombScenario ScenarioWithID(int id) {
+            string name = "BombScenario" + id;
+            Type type = typeof(BombScenario).Assembly.GetType($"{typeof(BombScenario).Namespace}.{name}");
+            if (type == null) {
+                throw new System.Exception("ChooseRandomScenario could not find a scenario named: " + $"{typeof(BombScenario).Namespace}.{name}");
+            }
+
+            object instance = Activator.CreateInstance(type);
+            BombScenario myObj = (BombScenario)instance;
+            return myObj;
+        }
+
+        // Used by both the BombScene to give an initial setup of the board and by DefusalInstructions to know what
+        // hints will be need to defuse the bomb.
+        // This should be random, but only for things that don't immediatly trip the bomb.
+        // See comment above BombScenario for what those are.
+        internal static BombScenario CreateSetupScenario() {
+            return new BombScenario() {
+            stoplightTextureIdx = Random.Shared.Next(0, (int)BombScreen.StoplightTextures.Last),
+            twistKnobTurned = 0,
+            fusesBroken = [false, false, false, false, false],
+            switchesFlipped = [Random.Shared.Next(0,2) == 1, 
+                               Random.Shared.Next(0,2) == 1,
+                               Random.Shared.Next(0,2) == 1,
+                               Random.Shared.Next(0,2) == 1],
+            pressTexture = Random.Shared.Next(0,2) == 1 ? (int)BombScreen.PressTextures.DontPress : (int)BombScreen.PressTextures.Press,
+            sliderPosition = Random.Shared.Next(0,2) == 1 ? BombScreen.SliderKnob.Up : BombScreen.SliderKnob.Down,
+            keypadString = ""
+            };
+        }
+    }
+
+    // These are what the values should be to consider the bomb defused
+    // Please read these notes! There are some limitations.
+    /*
+    // When setting switcheFlipped, you can only choose one of these. And you must choose one, not flipping any switches wont' work.
+        [true,false,false,false]
+        [true,true,false,false]
+        [true,true,true,false]
+        [true,true,true,true]
+        [false,true,false,false]
+        [false,true,true,false]
+        [false,true,true,true]
+        [false,false,true,false]
+        [false,false,true,true]
+        [false,false,false,true]
+    */
+    // Fuses: You can only break two. Any two, but only two.
+    // Random values: they'd work, but then you'd never know what the scenario would be to validate.  Maybe that's not a bad thing.
+    public class BombScenario1 : BombScenario {
+        public BombScenario1() : base() {
+            id = 1;
+            fusesBroken = [true, false, false, true, false];
+            keypadString = "88913";
+            switchesFlipped = [true, false, false, false];
+            pressTexture = (int)BombScreen.PressTextures.DontPress;
+            stoplightTextureIdx = (int)BombScreen.StoplightTextures.Yellow;
+        }
+    }
+
+    public class BombScenario2 : BombScenario {
+        public BombScenario2() : base() {
+            id = 2;
+            fusesBroken = [true, true, false, false, false];
+            keypadString = "999999";
+            switchesFlipped = [false, false, false, true];
+            pressTexture = (int)BombScreen.PressTextures.Press;
+            stoplightTextureIdx = (int)BombScreen.StoplightTextures.Red;
+            twistKnobTurned = 1;
+        }
+    }
+
+    public class BombScenario3 : BombScenario {
+        public BombScenario3() : base() {
+            id = 3;
+            fusesBroken = [false, true, false, false, true];
+            keypadString = "107734";
+            switchesFlipped = [false,true,true,false];
+            pressTexture = (int)BombScreen.PressTextures.DontPress;
+            twistKnobTurned = 2;
+        }
+    }
+
+    public class BombScenario4 : BombScenario {
+        public BombScenario4() : base() {
+            id = 4;
+            fusesBroken = [false, false, false, true, true];
+            keypadString = "67";
+            switchesFlipped = [false,true,true,true];
+            pressTexture = (int)BombScreen.PressTextures.DontPress;
+            sliderPosition = Random.Shared.Next(0,2) == 1 ? BombScreen.SliderKnob.Up : BombScreen.SliderKnob.Down;
+            twistKnobTurned = 3;
+        }
+    }
+
+    public class BombScenario5 : BombScenario {
+        public BombScenario5() : base() {
+            id = 5;
+            sliderPosition = Random.Shared.Next(0,2) == 1 ? BombScreen.SliderKnob.Up : BombScreen.SliderKnob.Down;
+            fusesBroken = [true, false, false, true, false];
+            switchesFlipped = [true,true,true,true];
+            keypadString = "8675309";
+            twistKnobTurned = 1;
+        }
+    }
+
+    public class BombScenario6 : BombScenario {
+        public BombScenario6() : base() {
+            id = 6;
+            sliderPosition = Random.Shared.Next(0,2) == 1 ? BombScreen.SliderKnob.Up : BombScreen.SliderKnob.Down;
+            keypadString = "123467890";
+            fusesBroken = [false, false, true, true, false];
+            switchesFlipped = [true,true,true,false];
+            pressTexture = (int)BombScreen.PressTextures.Press;
+            twistKnobTurned = 2;
+        }
+    }
+
 }

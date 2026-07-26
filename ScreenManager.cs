@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework.Media;
 
 namespace GameJam2026 {
     public class ScreenManager : DrawableGameComponent {
@@ -44,17 +46,17 @@ namespace GameJam2026 {
 
         GameScreen currentGameScreen;
 
+        List<GameScreen> allGames = new List<GameScreen>();
+
         IBombScreenService bombService;
         IScoresAndStatsInterface scoresAndStatsInterface;
 
         public SoundEffect buzzer;
+        public SoundEffect dopeAssBombTrack;
+        SoundEffectInstance dopeAssBombTrackInstance;
 
         public ScreenManager(Game game) : base(game) {
         }
-
-        // public void AddScreen(GameScreen gameScreen) {
-        //     screens.Add(gameScreen);
-        // }
 
         public override void Initialize() {
             contentMgr = new ContentManager(this.Game.Services, "Content");
@@ -76,7 +78,6 @@ namespace GameJam2026 {
             longWayDownScreen = new LongWayDown(this);
             wordCountScreen = new WordCount(this);
 
-
             // Register screens so their Load() methods are called from LoadContent
             screens.Add(startAndEndScreen);
             screens.Add(bombScreen);
@@ -89,14 +90,17 @@ namespace GameJam2026 {
             screens.Add(longWayDownScreen);
             screens.Add(wordCountScreen);
 
+            allGames.Add(downFeathersScreen);
+            allGames.Add(countTakedownScreen);
+            allGames.Add(longWayDownScreen);
+            allGames.Add(wordCountScreen);
+
             foreach (GameScreen screen in screens) {
                 screen.Initialize();
             }
 
             bombService = Game.Services.GetService(typeof(IBombScreenService)) as IBombScreenService;
             scoresAndStatsInterface = Game.Services.GetService(typeof(IScoresAndStatsInterface)) as IScoresAndStatsInterface;
-
-            buzzer = contentMgr.Load<SoundEffect>("sounds/yusuf_sfx-wrong-buzzer-double-491796");
 
             base.Initialize();
         }
@@ -111,6 +115,13 @@ namespace GameJam2026 {
             cursedTimer12ptFont = content.Load<SpriteFont>("CursedTimer12pt");
             blankTexture = new Texture2D(GraphicsDevice, 1, 1);
             blankTexture.SetData(new[] { Color.White.PackedValue });
+
+            buzzer = contentMgr.Load<SoundEffect>("sounds/yusuf_sfx-wrong-buzzer-double-491796");
+            dopeAssBombTrack = contentMgr.Load<SoundEffect>("sounds/DopeAssBombTrack");
+            dopeAssBombTrackInstance = dopeAssBombTrack.CreateInstance();
+            dopeAssBombTrackInstance.IsLooped = true;
+            dopeAssBombTrackInstance.Volume = 0.03f;
+            dopeAssBombTrackInstance.Play();
 
             foreach (GameScreen screen in screens) {
                 screen.Load();
@@ -171,25 +182,45 @@ namespace GameJam2026 {
                 GraphicsDevice.Viewport = viewport;
             }
 
-            // Utilities.DebugString(this, viewport.Bounds.ToString(), Vector2.One);
+            // Utilities.DebugString(this, debugString, Vector2.One);
         }
 
+        // string debugString = "";
         public void BombExploded() {
             gameIsActive = false;
             currentGameScreen.isActive = false;
             startAndEndScreen.isActive = true;
             startAndEndScreen.isEndScreen = true;
+            startAndEndScreen.bombWasDefused = false;
 
             scoresAndStatsInterface.GameFailed(GameDetails.FindGameWithID(currentGameScreen.id));
         }
 
+        public void BombDefused() {
+            gameIsActive = false;
+            currentGameScreen.isActive = false;
+            startAndEndScreen.isActive = true;
+            startAndEndScreen.isEndScreen = true;
+            startAndEndScreen.bombWasDefused = true;
+
+            scoresAndStatsInterface.BombDefused();
+        }
+
+
         // Called when a game has completed. Time to move on.
         internal void GameHasFinished(GameScreen screen) {
             if (screen == startAndEndScreen) {
+                // if (startAndEndScreen.isEndScreen) {
+                    
+                // }
+                // else {
                 if (startAndEndScreen.isEndScreen) {
-
+                    foreach (GameScreen s in screens) {
+                        s.Reset();
+                    }
                 }
-                else {
+                
+
                     // Starting a new game
                     bombService.GameStarted();
                     gameIsActive = true;
@@ -199,7 +230,7 @@ namespace GameJam2026 {
                     currentGameScreen.isActive = true;
 
                     scoresAndStatsInterface.GameStarted(GameDetails.FindGameWithID(currentGameScreen.id));
-                }
+                // }
             }
             else if (screen == disarmTheBombScreen) {
                 // Just a placeholder for a real end-game
@@ -234,12 +265,19 @@ namespace GameJam2026 {
         internal void WhichGamesToPlay() {
             gamesToPlay.Clear();
 
-            // TODO: This will need to be smarter once we get more games finished
-            gamesToPlay.Add(longWayDownScreen);
-            gamesToPlay.Add(wordCountScreen);
-            gamesToPlay.Add(downFeathersScreen);
-            gamesToPlay.Add(countTakedownScreen);
+            gamesToPlay.AddRange(allGames);
+            Random.Shared.Shuffle(CollectionsMarshal.AsSpan(gamesToPlay));
 
+            // gamesToPlay.Add(disarmTheBombScreen);
+        }
+
+        internal void ToggleBackgroundMusic() {
+            if (dopeAssBombTrackInstance.State == SoundState.Playing) {
+                dopeAssBombTrackInstance.Stop();
+            }
+            else {
+                dopeAssBombTrackInstance.Play();
+            }
         }
 
     }
