@@ -550,9 +550,22 @@ namespace GameJam2026 {
             defusalService.RevealDoor(gamesCompleted);
         }
 
+        int retriesAllowed = 5;
         public void GameStarted() {
+            if (retriesAllowed < 5) { retriesAllowed = 5; }
             defuseScenario = BombScenario.ChooseRandomScenario();
             var setupScenario = BombScenario.CreateSetupScenario();
+
+            do {
+                int hintsReturned = defusalService.PreflightDefuseScenario(defuseScenario, setupScenario);
+                if (hintsReturned >= 4) {
+                    break;
+                }
+                setupScenario = BombScenario.CreateSetupScenario();
+                retriesAllowed -= 1;
+               
+            } while (retriesAllowed > 0);
+
             ConfigureBomb(setupScenario);
             defusalService.SetDefuseScenario(defuseScenario, setupScenario);
             gamesCompleted = 0;

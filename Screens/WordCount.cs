@@ -141,6 +141,8 @@ namespace GameJam2026 {
             }
             sb.End();
 
+            titleString.Draw(screenManager, gameTime);
+
             base.Draw(gameTime);
         }
 

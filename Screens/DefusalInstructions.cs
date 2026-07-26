@@ -136,6 +136,31 @@ namespace GameJam2026 {
             doorsToReveal.Add(doorNumber - 1);
         }
 
+        public int PreflightDefuseScenario(BombScenario successScenario, BombScenario setupScenario) {
+            int hintsToShow = 0;
+            if (setupScenario.keypadString != successScenario.keypadString) {
+                hintsToShow += 1;
+            }
+            if (CheckIfArraysAreEqual(setupScenario.fusesBroken, successScenario.fusesBroken) == false) {
+            }
+            if (CheckIfArraysAreEqual(setupScenario.switchesFlipped, successScenario.switchesFlipped) == false) {
+                hintsToShow += 1;
+            }
+            if (setupScenario.stoplightTextureIdx != successScenario.stoplightTextureIdx) {
+                hintsToShow += 1;
+            }
+            if (setupScenario.twistKnobTurned != successScenario.twistKnobTurned) {
+                hintsToShow += 1;
+            }
+            if (setupScenario.pressTexture != successScenario.pressTexture) {
+                hintsToShow += 1;
+            }
+            if (setupScenario.sliderPosition != successScenario.sliderPosition) {
+                hintsToShow += 1;
+            }
+            return hintsToShow;
+        }
+
         public void SetDefuseScenario(BombScenario successScenario, BombScenario setupScenario) {
             List<Texture2D> hintsToShow = new List<Texture2D>();
 
@@ -244,6 +269,7 @@ namespace GameJam2026 {
         // Doors are indexed 0-3
         void RevealDoor(int doorNumber);
         void SetDefuseScenario(BombScenario successScenario, BombScenario setupScenario);
+        int PreflightDefuseScenario(BombScenario successScenario, BombScenario setupScenario);
     }
 }
 
