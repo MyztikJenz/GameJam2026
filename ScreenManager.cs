@@ -21,6 +21,9 @@ namespace GameJam2026 {
         internal SpriteFont cursedTimerFont { get; private set; }
         internal SpriteFont cursedTimerSmallFont { get; private set; }
         internal SpriteFont cursedTimer12ptFont { get; private set; }
+        internal SpriteFont chalkFont { get; private set; }
+
+
         public Texture2D blankTexture { get; private set; }
 
         public ContentManager contentMgr { get; private set; }
@@ -113,6 +116,7 @@ namespace GameJam2026 {
             cursedTimerFont = content.Load<SpriteFont>("CursedTimer");
             cursedTimerSmallFont = content.Load<SpriteFont>("CursedTimerSmall");
             cursedTimer12ptFont = content.Load<SpriteFont>("CursedTimer12pt");
+            chalkFont = content.Load<SpriteFont>("Chalkduster");
             blankTexture = new Texture2D(GraphicsDevice, 1, 1);
             blankTexture.SetData(new[] { Color.White.PackedValue });
 

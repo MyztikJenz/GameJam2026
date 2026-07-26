@@ -19,7 +19,6 @@ namespace GameJam2026 {
         List<string> gameWords = new List<string>();
         Strategies strategy;
         int answer;
-        public SpriteFont chalkFont { get; private set; }
         float blinkTimer;
         Rectangle blinkRect;
         int typedAnswer = 999;
@@ -61,7 +60,6 @@ namespace GameJam2026 {
 
             titleString = new TitleString("Can You Count?!");
 
-            chalkFont = screenManager.contentMgr.Load<SpriteFont>("Chalkduster");
             blinkRect = new Rectangle(viewport.Bounds.Right - 250, viewport.Bounds.Bottom - 40, 100, 10);
 
             buzzer = screenManager.contentMgr.Load<SoundEffect>("sounds/yusuf_sfx-wrong-buzzer-double-491796");
@@ -110,6 +108,7 @@ namespace GameJam2026 {
             screenManager.GraphicsDevice.Clear(new Color(39, 76, 67));
 
             SpriteBatch sb = screenManager.spriteBatch;
+            SpriteFont font = screenManager.chalkFont;
             sb.Begin(samplerState: SamplerState.PointClamp);
 
 
@@ -120,9 +119,9 @@ namespace GameJam2026 {
                 if (x == 8) {
                     column = viewport.Bounds.Center.X;
                 }
-                Vector2 textSize = chalkFont.MeasureString(word);
+                Vector2 textSize = font.MeasureString(word);
                 Vector2 location = new Vector2(column - textSize.X / 2, yOffset);
-                sb.DrawString(chalkFont, word, location, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                sb.DrawString(font, word, location, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
                 if (x>0 && x % 2 != 0) {
                     yOffset += (int)textSize.Y + 10;
@@ -134,11 +133,11 @@ namespace GameJam2026 {
             }
 
             if (typedAnswerTimer > 0) {
-                Vector2 textSize = chalkFont.MeasureString(typedAnswer.ToString());
+                Vector2 textSize = font.MeasureString(typedAnswer.ToString());
                 var answerRect = blinkRect;
                 answerRect.Location = new Point(answerRect.Center.X - (int)(textSize.X / 2.0), answerRect.Location.Y - (int)textSize.Y);
                 
-                sb.DrawString(chalkFont, typedAnswer.ToString(), answerRect.Location.ToVector2(), Color.White);
+                sb.DrawString(font, typedAnswer.ToString(), answerRect.Location.ToVector2(), Color.White);
             }
             sb.End();
 
