@@ -44,7 +44,7 @@ namespace GameJam2026 {
             trashPanda = screenManager.contentMgr.Load<Texture2D>("didnt_make_it_in/trash_panda");
             kangaroo = screenManager.contentMgr.Load<Texture2D>("didnt_make_it_in/kangaroo");
             boxer = screenManager.contentMgr.Load<Texture2D>("didnt_make_it_in/boxer");
-            body = screenManager.contentMgr.Load<Texture2D>("didnt_make_it_in/body");
+            body = screenManager.contentMgr.Load<Texture2D>("didnt_make_it_in/Body");
 
             for(int x=0; x<heads.Length; x++) {
                heads[x] = screenManager.contentMgr.Load<Texture2D>("didnt_make_it_in/Head_" + (x+1));
