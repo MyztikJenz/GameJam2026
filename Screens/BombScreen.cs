@@ -380,7 +380,7 @@ namespace GameJam2026 {
 
             // Draw the twist knob
             Vector2 twistKnobPivot = new Vector2(twist_knob.Width / 2f, twist_knob.Height / 2f);
-            sb.Draw(twist_knob, twistKnob.Center.ToVector2(), null, Color.White, MathHelper.ToRadians(twistKnobDegrees), twistKnobPivot, 1f, SpriteEffects.None, 1f);
+            sb.Draw(twist_knob, twistKnob.Center.ToVector2(), null, Color.White, MathHelper.ToRadians(360 - twistKnobDegrees), twistKnobPivot, 1f, SpriteEffects.None, 1f);
             if (twistOverlay > 0) {
                 sb.DrawString(screenManager.font, twistOverlay.ToString(), new Vector2(twistKnob.Right - 10, twistKnob.Bottom - 20), Color.Navy);
             }
