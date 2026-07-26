@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace GameJam2026 {
     class ScoresAndStats : GameScreen, IScoresAndStatsInterface {
@@ -95,6 +94,11 @@ namespace GameJam2026 {
                     currentGame.bestTime = currentGame.currentTime;
                 }
             }
+
+            if (game == null) {
+                throw new System.Exception("ScoresAndStats GameStarted got a null game");
+            }
+
 
             currentGame = game;
             newGameSplitTime = bombService.CurrentBombClock();

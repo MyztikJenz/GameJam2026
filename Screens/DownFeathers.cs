@@ -155,6 +155,7 @@ namespace GameJam2026 {
                 displayedFeathers.Add(new Feather(f));
             }
             playerPosition = new Vector2(viewport.Bounds.Width / 2, viewport.Bounds.Height - 5 - goose.Height);
+            score = 0;
 
         }
     }

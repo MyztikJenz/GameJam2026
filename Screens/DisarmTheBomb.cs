@@ -7,7 +7,7 @@ namespace GameJam2026 {
         float the_oscillator = 5f;
         float bomb_oscillator = 5f;
         public DisarmTheBomb(ScreenManager manager) : base(manager) {
-
+            id = GameDetails.DefuseTheBombScreenID;
         }
 
         public override void Update(GameTime gameTime) {

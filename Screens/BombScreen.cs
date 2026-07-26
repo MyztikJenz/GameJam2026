@@ -555,6 +555,7 @@ namespace GameJam2026 {
             var setupScenario = BombScenario.CreateSetupScenario();
             ConfigureBomb(setupScenario);
             defusalService.SetDefuseScenario(defuseScenario, setupScenario);
+            gamesCompleted = 0;
             gameIsActive = true;
             bombClock = startingBombClockTime;
             tickingClockInstance.Play();

@@ -25,7 +25,7 @@ namespace GameJam2026 {
             // This isn't a game, but if we don't have a definition for it here, weird things happen.
             games.Add(new GameDetail { name = "Final Bomb Screen",
                                        icon = null,
-                                       id = DefuseTheBombScreenID } );
+                                       id = GameDetails.DefuseTheBombScreenID } );
 
             games.Add(new GameDetail { name = "Count Takedown",
                                        icon = contentMgr.Load<Texture2D>("icons/count_takedown"),

@@ -198,6 +198,7 @@ namespace GameJam2026 {
             playerPosition = new Vector2(viewport.Bounds.Width / 2, viewport.Bounds.Height - 5 - ship.Height);
             titleString.Reset();
             bullets.Clear();
+            score = 0;
 
             base.Reset();
         }

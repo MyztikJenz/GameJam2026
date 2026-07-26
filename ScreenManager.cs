@@ -214,10 +214,6 @@ namespace GameJam2026 {
         // Called when a game has completed. Time to move on.
         internal void GameHasFinished(GameScreen screen) {
             if (screen == startAndEndScreen) {
-                // if (startAndEndScreen.isEndScreen) {
-                    
-                // }
-                // else {
                 if (startAndEndScreen.isEndScreen) {
                     foreach (GameScreen s in screens) {
                         s.Reset();
@@ -225,23 +221,15 @@ namespace GameJam2026 {
                 }
                 
 
-                    // Starting a new game
-                    bombService.GameStarted();
-                    gameIsActive = true;
-                    startAndEndScreen.isActive = false;
-                    WhichGamesToPlay();
-                    currentGameScreen = GetNextGame();
-                    currentGameScreen.isActive = true;
+                // Starting a new game
+                bombService.GameStarted();
+                gameIsActive = true;
+                startAndEndScreen.isActive = false;
+                WhichGamesToPlay();
+                currentGameScreen = GetNextGame();
+                currentGameScreen.isActive = true;
 
-                    scoresAndStatsInterface.GameStarted(GameDetails.FindGameWithID(currentGameScreen.id));
-                // }
-            }
-            else if (screen == disarmTheBombScreen) {
-                // Just a placeholder for a real end-game
-                gameIsActive = false;
-                currentGameScreen.isActive = false;
-                startAndEndScreen.isActive = true;
-                startAndEndScreen.isEndScreen = true;
+                scoresAndStatsInterface.GameStarted(GameDetails.FindGameWithID(currentGameScreen.id));
             }
             else {
                 bombService.GameCompleted();
@@ -256,7 +244,6 @@ namespace GameJam2026 {
         internal GameScreen GetNextGame() {
             if (gamesToPlay.Count == 0) {
                 // They just need to disarm the bomb
-                // We'll eventually draw something pointing them to the bomb
                 return disarmTheBombScreen;
             }
             else {
@@ -271,8 +258,6 @@ namespace GameJam2026 {
 
             gamesToPlay.AddRange(allGames);
             Random.Shared.Shuffle(CollectionsMarshal.AsSpan(gamesToPlay));
-
-            // gamesToPlay.Add(disarmTheBombScreen);
         }
 
         internal void ToggleBackgroundMusic() {
