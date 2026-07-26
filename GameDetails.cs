@@ -13,12 +13,19 @@ namespace GameJam2026 {
         internal float currentTime { get; set; } // used when the game is being actively played
     }
 
+
     public static class GameDetails {
         public static List<GameDetail> games { get; }
+        public static string DefuseTheBombScreenID = "5EA0717F-BFB7-4183-87DA-39957C39331E";
 
         static GameDetails() {
             ContentManager contentMgr = GameJam2026Game.GameObj.Content;
             games = new List<GameDetail>();
+
+            // This isn't a game, but if we don't have a definition for it here, weird things happen.
+            games.Add(new GameDetail { name = "Final Bomb Screen",
+                                       icon = null,
+                                       id = DefuseTheBombScreenID } );
 
             games.Add(new GameDetail { name = "Count Takedown",
                                        icon = contentMgr.Load<Texture2D>("icons/count_takedown"),
