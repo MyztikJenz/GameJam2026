@@ -408,18 +408,6 @@
 /processorParam:TextureFormat=Color
 /build:hint_4.png
 
-#begin hint_reveal_background.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:hint_reveal_background.png
-
 #begin icons/long_way_down.png
 /importer:TextureImporter
 /processor:TextureProcessor

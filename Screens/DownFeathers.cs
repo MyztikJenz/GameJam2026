@@ -52,6 +52,8 @@ namespace GameJam2026 {
         public override void Unload() { }
 
         public override void Update(GameTime gameTime) {
+            if (!isActive) { return; }
+
             base.Update(gameTime);
 
             // Does the center-ish square of the goose touch the feather?
@@ -93,6 +95,8 @@ namespace GameJam2026 {
         }
 
         public override void HandleInput(GameTime gameTime, InputState input) {
+            if (!isActive) { return; }
+
             int playerIdx = (int)PlayerIndex.One;
             KeyboardState kState = input.currentKeyboardStates[playerIdx];
 
@@ -103,12 +107,6 @@ namespace GameJam2026 {
             if (kState.IsKeyDown(Keys.Right) || kState.IsKeyDown(Keys.D)) {
                 movement.X++;
             }
-            // if (kState.IsKeyDown(Keys.Up) || kState.IsKeyDown(Keys.W)) {
-            //     movement.Y--;
-            // }
-            // if (kState.IsKeyDown(Keys.Down) || kState.IsKeyDown(Keys.S)) {
-            //     movement.Y++;
-            // }
 
             if (movement.Length() > 1) {
                 movement.Normalize();

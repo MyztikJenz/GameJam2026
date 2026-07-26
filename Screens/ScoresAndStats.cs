@@ -103,7 +103,7 @@ namespace GameJam2026 {
 
         public void BombDefused() {
             if (bombCurrentTime < bombBestTime || bombBestTime == 0f) {
-                bombBestTime = bombCurrentTime;
+                bombBestTime = bombService.StartingBombClockTime() - bombService.CurrentBombClock();;
             }
         }
     }

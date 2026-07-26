@@ -70,11 +70,13 @@ namespace GameJam2026 {
             equation.Clear();
             activeCrates = null;
             nextCrateType = Crates.numeric;
+            completedEquation = "";
 
             base.Reset();
         }
 
         public override void Update(GameTime gameTime) {
+            if (!isActive) { return; }
             titleString.Update(gameTime);
 
             if (displayQuestion) {
@@ -149,6 +151,7 @@ namespace GameJam2026 {
         }
 
         public override void HandleInput(GameTime gameTime, InputState input) {
+            if (!isActive) { return; }
 
             if (displayQuestion) {
                 if (typedAnswerTimer > 0) { return; } // to prevent typing while we show the wrong answer

@@ -68,6 +68,7 @@ namespace GameJam2026 {
         }
 
         public override void Update(GameTime gameTime) {
+            if (!isActive) { return; }
             if (gameWords.Count == 0) {
                 PrepareGame();
             }
@@ -86,6 +87,7 @@ namespace GameJam2026 {
         }
 
         public override void HandleInput(GameTime gameTime, InputState input) {
+            if (!isActive) { return; }
             int playerIdx = (int)PlayerIndex.One;
             KeyboardState kState = input.currentKeyboardStates[playerIdx];
 

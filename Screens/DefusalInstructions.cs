@@ -9,7 +9,6 @@ namespace GameJam2026 {
 
     class DefusalInstructions : GameScreen, IDefusalInstructionsService {
         Texture2D door;
-        Texture2D reveal_background;
         Texture2D[] doors = new Texture2D[4];
         List<int> doorsToReveal = new List<int>();
 
@@ -31,7 +30,6 @@ namespace GameJam2026 {
 
         public override void Load() {
             door = screenManager.contentMgr.Load<Texture2D>("hint_door");
-            reveal_background = screenManager.contentMgr.Load<Texture2D>("hint_reveal_background");
             for (int x=0; x<4; x++) {
                 Texture2D aNumber = screenManager.contentMgr.Load<Texture2D>("hint_" + (x+1));
 
@@ -40,6 +38,15 @@ namespace GameJam2026 {
         }
 
         public override void Unload() { }
+
+        public override void Reset() { 
+            doorsToReveal.Clear();
+            door1Textures.Clear();
+            door2Textures.Clear();
+            door3Textures.Clear();
+            door4Textures.Clear();
+        }
+
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
@@ -88,11 +95,13 @@ namespace GameJam2026 {
                 var left = new Rectangle(rect.X, rect.Y, rect.Width / 2, rect.Height);
                 var right = new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width - rect.Width / 2, rect.Height);
 
+                // This mess is here in case we need to split things differently. Mostly just notes for Future Myself.
                 // var top = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height / 2);
                 // var bottom = new Rectangle(rect.X, rect.Y + rect.Height / 2, rect.Width, rect.Height - rect.Height / 2)
 
-//                 int centeredX = targetRect.X + (targetRect.Width - drawWidth) / 2;
-// int centeredY = targetRect.Y + (targetRect.Height - drawHeight) / 2;
+                // int centeredX = targetRect.X + (targetRect.Width - drawWidth) / 2;
+                // int centeredY = targetRect.Y + (targetRect.Height - drawHeight) / 2;
+
                 sb.Draw(hints[0], left, Color.White);
                 sb.Draw(hints[1], right, Color.White);
             }
