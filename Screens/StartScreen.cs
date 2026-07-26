@@ -108,7 +108,7 @@ namespace GameJam2026 {
                 xOffset += slide;
             }
             sb.Draw(trashPanda, new Vector2(viewport.Bounds.Right - trashPanda.Width * scaleUp, viewport.Bounds.Bottom - trashPanda.Height * scaleUp), null, Color.White, 0, Vector2.Zero, scaleUp, SpriteEffects.FlipHorizontally, 1f);
-            sb.Draw(boxer, new Vector2(viewport.Bounds.Right - boxer.Width - 20, viewport.Bounds.Top + 30), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            sb.Draw(boxer, new Vector2(viewport.Bounds.Left + 20, viewport.Bounds.Top + 30), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.FlipHorizontally, 1f);
             sb.End();
 
             if (isEndScreen) {

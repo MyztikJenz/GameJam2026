@@ -149,6 +149,7 @@ namespace GameJam2026 {
         public override void Reset() {
             titleString.Reset();
 
+            displayedFeathers.Clear();
             sourceFeathers = Feather.CreateFeathers(screenManager.contentMgr, viewport.Bounds.Width);
             for (int x=0; x<7; x++) {
                 Feather f = sourceFeathers[Random.Shared.Next(sourceFeathers.Count)];

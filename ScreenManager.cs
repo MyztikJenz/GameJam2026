@@ -150,11 +150,6 @@ namespace GameJam2026 {
                     screen.Update(gameTime);
                 }
             }
-            // For each screen we need to update it. 
-            // Since our screens are going to be composed, we need to ensure the subscreens are
-            // appropriately marked as who's getting input. And where they can draw.
-            // TODO: the bomb screen will need to move to the smaller subscreen to the bigger one
-            //       once they finish the run through the minigames. What replaces it? who knows...
         }
 
         public override void Draw(GameTime gameTime) {
@@ -180,6 +175,10 @@ namespace GameJam2026 {
                 if (!gameIsActive) {
                     GraphicsDevice.Viewport = viewport;
                     startAndEndScreen.Draw(gameTime);
+
+                    if (startAndEndScreen.isEndScreen) {
+                        scoresAndStatsScreen.Draw(gameTime);
+                    }
                 }
             }
             finally {

@@ -113,6 +113,11 @@ namespace GameJam2026 {
                 bombBestTime = bombService.StartingBombClockTime() - bombService.CurrentBombClock();;
             }
         }
+
+        public override void Reset() {
+            currentGame = null;
+            base.Reset();
+        }
     }
 
     public interface IScoresAndStatsInterface {

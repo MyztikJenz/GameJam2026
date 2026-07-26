@@ -696,7 +696,7 @@ namespace GameJam2026 {
     public class BombScenario5 : BombScenario {
         public BombScenario5() : base() {
             id = 5;
-            sliderPosition = Random.Shared.Next(0,2) == 1 ? BombScreen.SliderKnob.Up : BombScreen.SliderKnob.Down;
+            sliderPosition = BombScreen.SliderKnob.Down;
             fusesBroken = [true, false, false, true, false];
             switchesFlipped = [true,true,true,true];
             keypadString = "8675309";
@@ -707,7 +707,7 @@ namespace GameJam2026 {
     public class BombScenario6 : BombScenario {
         public BombScenario6() : base() {
             id = 6;
-            sliderPosition = Random.Shared.Next(0,2) == 1 ? BombScreen.SliderKnob.Up : BombScreen.SliderKnob.Down;
+            sliderPosition = BombScreen.SliderKnob.Down;
             keypadString = "123467890";
             fusesBroken = [false, false, true, true, false];
             switchesFlipped = [true,true,true,false];

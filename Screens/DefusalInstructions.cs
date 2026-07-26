@@ -176,7 +176,7 @@ namespace GameJam2026 {
             }
 
             if (hintsToShow.Count < 4) {
-                throw new System.Exception("In DefusalInstructions.SetDefuseScenario, you can't have less than four hints");
+                throw new System.Exception($"SuccessScenario {successScenario.id} provided less than four hints in DefusalInstructions.SetDefuseScenario");
             }
 
             Random.Shared.Shuffle(CollectionsMarshal.AsSpan(hintsToShow));
