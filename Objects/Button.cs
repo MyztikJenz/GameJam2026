@@ -103,6 +103,14 @@ namespace GameJam2026 {
             Text = text;
         }
 
+        public int intValue;
+        public Button(Rectangle r, int intValue) {
+            Position = r.Location.ToVector2();
+            Size = r.Size.ToVector2();
+            this.intValue = intValue;
+            Text = "";
+        }
+
         /// <summary>
         /// Invokes the Tapped event and allows subclasses to perform actions when tapped.
         /// </summary>

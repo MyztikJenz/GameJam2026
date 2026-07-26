@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 /*
@@ -69,6 +70,15 @@ namespace GameJam2026 {
         public Point mousePosition(PlayerIndex idx = PlayerIndex.One) {
             int x = (int)idx;
             return currentMouseStates[x].Position;
+        }
+
+        // Mouse coordinate are in screen space. Translate them to viewport space
+        public Point translatedMousePosition(Viewport viewport, PlayerIndex idx = PlayerIndex.One) {
+            var p = mousePosition(idx);
+            p.X -= viewport.Bounds.X;
+            p.Y -= viewport.Bounds.Y;
+
+            return p;
         }
 
         public int? isNumberKeyPressed(PlayerIndex idx = PlayerIndex.One) {
