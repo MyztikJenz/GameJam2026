@@ -266,6 +266,16 @@ namespace GameJam2026 {
                             textColor);
 
             // Draw the keypad screen
+            var keypadRect = displays[(int)Displays.Keypad];
+            string keypadString = "9941";
+            stringSize = screenManager.cursedTimer12ptFont.MeasureString(keypadString);
+            smallYAxisFontAdjustment = 3;
+            sb.Draw(screenManager.blankTexture, keypadRect, Color.Black);
+            Color keypadTextColor = Color.Green;
+            sb.DrawString(screenManager.cursedTimer12ptFont, keypadString, 
+                            new Vector2(keypadRect.Left + keypadRect.Width / 2 - stringSize.X / 2, 
+                                        keypadRect.Top + keypadRect.Height / 2 - stringSize.Y / 2 + smallYAxisFontAdjustment), 
+                            textColor);
 
             // Now the bomb. Everything else is on top
             sb.Draw(bomb, Point.Zero.ToVector2(), Color.White);
